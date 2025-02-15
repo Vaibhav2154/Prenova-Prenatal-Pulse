@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return StarryBackground(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppPallete.backgroundColor,
         body: SingleChildScrollView(
           child: Center(
             child: Container(

@@ -10,9 +10,9 @@ class AppTheme {
     borderRadius: BorderRadius.circular(10),
   );
   static final darkThemeMode = ThemeData.dark().copyWith(
-    scaffoldBackgroundColor: AppPallete.backgroundColor,
+    scaffoldBackgroundColor: const Color.fromARGB(255, 139, 129, 129),
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPallete.backgroundColor,
+      backgroundColor: Color.fromARGB(255, 156, 155, 163),
     ),
     chipTheme: const ChipThemeData(
       color: MaterialStatePropertyAll(

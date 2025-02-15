@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
+import 'package:prenova/features/MedicalDocuments/medical_documents.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/Profilepage.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
@@ -65,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final List<Widget> bottomNavScreens = [
       PregnancyChatScreen(),
       PregnancyDietScreen(),
-      // UploadDocsScreen(),
+      MedicalDocumentsPage(),
       DoctorConsultationPage(),
     ];
 

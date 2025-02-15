@@ -51,6 +51,7 @@ dependencies:
   flare_flutter: ^3.0.2
   speech_to_text: ^7.0.0
   flutter_tts: ^4.2.2
+  cached_network_image: ^3.4.1
     # Ensure this is up-to-date
 
 

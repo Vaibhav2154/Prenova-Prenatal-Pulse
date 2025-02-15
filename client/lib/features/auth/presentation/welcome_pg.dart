@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:prenova/core/theme/starry_bg.dart';
 import 'package:prenova/features/auth/presentation/Registerpage.dart';
 import 'package:prenova/features/auth/presentation/loginpage.dart';
@@ -40,7 +41,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return StarryBackground(
       child: Scaffold(
-        backgroundColor: Colors.transparent, // So background is visible
+        backgroundColor: const Color(0xff054083), // So background is visible
         body: SafeArea(
           child: Column(
             children: [
@@ -53,10 +54,9 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                   children: [
                     Image.asset(
                       'assets/logo.png', // Replace with your logo path
-                      height: 200,
+                      height: 400,
                     ),
                     const SizedBox(height: 10),
-
                     // Beating Heart Animation
                     ScaleTransition(
                       scale: _heartAnimation,
@@ -67,7 +67,6 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       ),
                     ),
                     const SizedBox(height: 10),
-
                     // Slogan
                     Text(
                       "Caring for Moms, Protecting the Future",
@@ -99,11 +98,10 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15),
-                      backgroundColor: Colors.pinkAccent,
+                      backgroundColor: AppPallete.gradient1,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      elevation: 10,
                     ),
                     child: Text(
                       "Get Started",

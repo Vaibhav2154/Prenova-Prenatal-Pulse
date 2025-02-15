@@ -24,30 +24,11 @@ class _GlowingButtonState extends State<GlowingButton> with SingleTickerProvider
       duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat(reverse: true);
-
-    _glowAnimation = ColorTween(
-      begin: AppPallete.gradient1,
-      end: AppPallete.gradient1,
-    ).animate(_controller);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _glowAnimation,
-      builder: (context, child) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              BoxShadow(
-                color: _glowAnimation.value!,
-                blurRadius: 20,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: ElevatedButton(
+    return  ElevatedButton(
             onPressed: widget.onPressed,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
@@ -63,11 +44,9 @@ class _GlowingButtonState extends State<GlowingButton> with SingleTickerProvider
                 color: Colors.white,
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
   }
+  
 
   @override
   void dispose() {
