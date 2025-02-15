@@ -74,7 +74,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
                 prefixIcon: Icon(Icons.fastfood, color: AppPallete.gradient1),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: AppPallete.borderColor!, width: 1.2),
+                  borderSide: BorderSide(color: AppPallete.borderColor, width: 1.2),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -92,7 +92,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: AppPallete.borderColor,
+        color: AppPallete.backgroundColor,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppPallete.gradient1, width: 1.5),
       ),
@@ -101,7 +101,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
           value: trimester,
           dropdownColor: AppPallete.borderColor,
           icon: Icon(Icons.arrow_drop_down, color: AppPallete.gradient1),
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.black, fontSize: 16),
           isExpanded: true,
           items: ["First", "Second", "Third"]
               .map((e) => DropdownMenuItem(value: e, child: Text("$e Trimester")))

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -190,6 +191,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           ),
           gridData: const FlGridData(show: true),
           borderData: FlBorderData(show: false),
+          backgroundColor: AppPallete.textColor,
           lineBarsData: [
             LineChartBarData(
               spots: _currentData,
@@ -216,7 +218,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
         showTitles: true,
         reservedSize: 30,
         interval: 60,
-        getTitlesWidget: (value, meta) => Text('${value.toInt()}s'),
+        getTitlesWidget: (value, meta) => Text('${value.toInt()}s',style: TextStyle(),),
       );
 
   SideTitles get _leftTitles => SideTitles(
