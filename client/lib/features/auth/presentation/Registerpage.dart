@@ -86,7 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   Image.asset(
                       'assets/logo.png',
-                      height: 200,
+                      height: 250,
                     ),
                   const Text(
                     "Register",

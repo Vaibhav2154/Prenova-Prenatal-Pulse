@@ -12,7 +12,7 @@ class StarryBackground extends StatefulWidget {
 class _StarryBackgroundState extends State<StarryBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late List<Star> stars;
+  late List<Star> stars = []; // Initialize as an empty list
   final int starCount = 30; // Reduced for a calming effect
   final Random random = Random();
 
@@ -25,7 +25,9 @@ class _StarryBackgroundState extends State<StarryBackground>
     )..repeat(reverse: true);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _generateStars();
+      if (mounted) {
+        _generateStars();
+      }
     });
   }
 
@@ -55,20 +57,20 @@ class _StarryBackgroundState extends State<StarryBackground>
           children: [
             Container(color: Colors.black), // Deep black background
             ...stars.map((star) => Positioned(
-              left: star.position.dx,
-              top: star.position.dy,
-              child: Opacity(
-                opacity: star.opacity.value,
-                child: Container(
-                  width: star.size,
-                  height: star.size,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
+                  left: star.position.dx,
+                  top: star.position.dy,
+                  child: Opacity(
+                    opacity: star.opacity.value,
+                    child: Container(
+                      width: star.size,
+                      height: star.size,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            )),
+                )),
             widget.child, // Wrap around this for any page
           ],
         );

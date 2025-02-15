@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
+
 
 class GlowingButton extends StatefulWidget {
   final String text;
@@ -24,8 +26,8 @@ class _GlowingButtonState extends State<GlowingButton> with SingleTickerProvider
     )..repeat(reverse: true);
 
     _glowAnimation = ColorTween(
-      begin: Colors.purpleAccent.withOpacity(0.5),
-      end: Colors.purpleAccent.withOpacity(0.9),
+      begin: AppPallete.gradient1,
+      end: AppPallete.gradient1,
     ).animate(_controller);
   }
 
@@ -49,7 +51,7 @@ class _GlowingButtonState extends State<GlowingButton> with SingleTickerProvider
             onPressed: widget.onPressed,
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-              backgroundColor: Colors.purpleAccent.withOpacity(0.8),
+              backgroundColor: AppPallete.gradient1,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               elevation: 0, // Remove default elevation
             ),
