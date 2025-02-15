@@ -193,12 +193,12 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                   ),
 
             SizedBox(height: 20),
-<<<<<<< HEAD
             Text(
               _prediction,
               style: TextStyle(fontSize: 18, color: AppPallete.textColor),
               textAlign: TextAlign.center,
-=======
+            ),
+
             Text(_prediction, style: TextStyle(color: Colors.white)),
 
             SizedBox(height: 30),
@@ -208,7 +208,6 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
               builder: (context, snapshot) {
                 return snapshot.hasData ? _buildTable(snapshot.data!) : CircularProgressIndicator();
               },
->>>>>>> 6fd82b3a8744e47a5cf5d1909f78ec47bedb0534
             ),
           ],
         ),
