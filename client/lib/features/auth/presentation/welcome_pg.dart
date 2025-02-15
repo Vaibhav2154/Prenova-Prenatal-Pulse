@@ -41,7 +41,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return StarryBackground(
       child: Scaffold(
-        backgroundColor: const Color(0xff054083), // So background is visible
+        backgroundColor: AppPallete.transparentColor, // So background is visible
         body: SafeArea(
           child: Column(
             children: [
@@ -73,7 +73,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       style: GoogleFonts.lato(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white70,
+                        color: AppPallete.textColor,
                       ),
                       textAlign: TextAlign.center,
                     ),

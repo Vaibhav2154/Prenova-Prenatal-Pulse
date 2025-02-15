@@ -3,6 +3,7 @@ import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:prenova/core/theme/starry_bg.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/glowing_btn.dart';
+import 'package:prenova/features/auth/presentation/loginpage.dart';
 //import 'package:unihub/pages/loginpage.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -77,23 +78,22 @@ class _RegisterPageState extends State<RegisterPage> {
       child: StarryBackground(
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(title: const Text("Register")),
           body: SingleChildScrollView(
             child: Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 90),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
                       'assets/logo.png',
-                      height: 250,
+                      height: 300,
                     ),
                   const Text(
                     "Register",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppPallete.greyColor,
+                      color: AppPallete.textColor,
                     ),
                   ),
                   const SizedBox(height: 20,),
@@ -103,6 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: const InputDecoration(labelText: "Email",
                     prefixIcon: const Icon(Icons.email, color: Colors.grey),
                     ),
+                    style: TextStyle(color: AppPallete.textColor),
                   ),
                   const SizedBox(height: 15),
                   TextField(
@@ -111,6 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: const InputDecoration(labelText: "Password",
                     prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                     ),
+                    style: TextStyle(color: AppPallete.textColor),
                   ),
                   const SizedBox(height: 15),
                   TextField(
@@ -119,6 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     decoration: const InputDecoration(labelText: "Confirm Password",
                     prefixIcon: Icon(Icons.lock, color: Colors.grey),
                     ),
+                    style: TextStyle(color: AppPallete.textColor),
                   ),
                   const SizedBox(height: 25),
                   // Container(
@@ -159,6 +162,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     // ),
 
                   const SizedBox(height: 20),
+                   GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                      );
+                    },
+                    child: const Text("Already have an account? Sign in",style: TextStyle(color: AppPallete.textColor),),
+                  ),
                 ],
               ),
             ),

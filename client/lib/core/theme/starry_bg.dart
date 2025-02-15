@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 
 class StarryBackground extends StatefulWidget {
   final Widget child;
@@ -55,7 +56,7 @@ class _StarryBackgroundState extends State<StarryBackground>
       builder: (context, child) {
         return Stack(
           children: [
-            Container(color: Colors.black), // Deep black background
+            Container(color: AppPallete.backgroundColor), // Deep black background
             ...stars.map((star) => Positioned(
                   left: star.position.dx,
                   top: star.position.dy,
@@ -66,7 +67,7 @@ class _StarryBackgroundState extends State<StarryBackground>
                       height: star.size,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
+                        color: AppPallete.accentFgColor,
                       ),
                     ),
                   ),

@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return StarryBackground(
       child: Scaffold(
-        backgroundColor: AppPallete.backgroundColor,
+        backgroundColor: AppPallete.transparentColor,
         body: SingleChildScrollView(
           child: Center(
             child: Container(
@@ -62,17 +62,17 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20,),
+                  SizedBox(height: 50,),
                   Image.asset(
                     'assets/logo.png',
-                    height: 300,
+                    height: 320,
                   ),
                   const Text(
                     "Sign in to continue",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: AppPallete.greyColor,
+                      color: AppPallete.textColor,
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -80,9 +80,11 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _emailcontroller,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(labelText: "Email",
+                    hoverColor: AppPallete.errorColor,
                     prefixIcon: const Icon(Icons.email, color: Colors.grey),
+                    focusColor: AppPallete.borderColor
                     ),
-                    style: TextField.materialMisspelledTextStyle,
+                    style: TextStyle(color: AppPallete.textColor),
                   ),
                   const SizedBox(height: 15),
                   TextField(
@@ -91,21 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: const InputDecoration(labelText: "Password",
                     prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        // Navigate to Forgot Password Page
-                      },
-                      child: const Text(
-                        "Forgot Password?",
-                        style: TextStyle(
-                          color: AppPallete.gradient2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    style: TextStyle(color: AppPallete.textColor),
                   ),
                   const SizedBox(height: 20),
                   SizedBox(
@@ -116,31 +104,6 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: login,
                     ),
                   ),
-                  // GestureDetector(
-                  //   onTap: login,
-                  //   child: Container(
-                  //     width: double.infinity,
-                  //     padding: const EdgeInsets.symmetric(vertical: 15),
-                  //     decoration: BoxDecoration(
-                  //       gradient: const LinearGradient(
-                  //         colors: [AppPallete.gradient1, AppPallete.gradient2],
-                  //         begin: Alignment.centerLeft,
-                  //         end: Alignment.centerRight,
-                  //       ),
-                  //       borderRadius: BorderRadius.circular(10),
-                  //     ),
-                  //     child: const Center(
-                  //       child: Text(
-                  //         "Login",
-                  //         style: TextStyle(
-                  //           fontSize: 18,
-                  //           fontWeight: FontWeight.bold,
-                  //           color: Colors.white,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 10),
 
                   const SizedBox(height: 20),
@@ -151,7 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                         MaterialPageRoute(builder: (context) => const RegisterPage()),
                       );
                     },
-                    child: const Text("Don't have an account? Sign up"),
+                    child: const Text("Don't have an account? Sign up",
+                    style: TextStyle(color: AppPallete.textColor),
+                    ),
                   ),
                 ],
               ),

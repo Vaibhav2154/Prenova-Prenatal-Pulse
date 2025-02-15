@@ -2,7 +2,7 @@ import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static _border([Color color = AppPallete.borderColor]) => OutlineInputBorder(
+  static _border([Color color = AppPallete.greyColor]) => OutlineInputBorder(
     borderSide: BorderSide(
       color: color,
       width: 3,
@@ -10,9 +10,9 @@ class AppTheme {
     borderRadius: BorderRadius.circular(10),
   );
   static final darkThemeMode = ThemeData.dark().copyWith(
-    scaffoldBackgroundColor: const Color.fromARGB(255, 139, 129, 129),
+    scaffoldBackgroundColor: AppPallete.backgroundColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color.fromARGB(255, 156, 155, 163),
+      backgroundColor: Color.fromARGB(255, 119, 117, 133),
     ),
     chipTheme: const ChipThemeData(
       color: MaterialStatePropertyAll(
@@ -24,7 +24,7 @@ class AppTheme {
       contentPadding: const EdgeInsets.all(27),
       border: _border(),
       enabledBorder: _border(),
-      focusedBorder: _border(AppPallete.gradient2),
+      focusedBorder: _border(AppPallete.gradient1),
       errorBorder: _border(AppPallete.errorColor),
     ),
   );

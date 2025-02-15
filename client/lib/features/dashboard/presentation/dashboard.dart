@@ -66,18 +66,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final List<Widget> bottomNavScreens = [
       PregnancyChatScreen(),
       PregnancyDietScreen(),
-      MedicalDocumentsPage(),
       DoctorConsultationPage(),
+      MedicalDocumentsPage(),
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Dashboard', style: TextStyle(fontWeight: FontWeight.bold,
+        fontSize: 30,
+        )),
         centerTitle: true,
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: AppPallete.gradient1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.account_circle, size: 32),
+            icon: Icon(Icons.account_circle, size: 42),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
             },
@@ -85,22 +90,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 50),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text("Hello, $username 👋",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,color: AppPallete.textColor)),
             SizedBox(height: 8),
             Text("What would you like to do today?",
-                style: TextStyle(fontSize: 20, color: Colors.grey[700])),
+                style: TextStyle(fontSize: 25, color: AppPallete.gradient1)),
             SizedBox(height: 30),
-            
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text("Week 19 - 3rd Trimester",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                TextButton(onPressed: (){}, child: Text('View Progress')),
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: AppPallete.textColor)),
+                TextButton(onPressed: (){}, child: Text('View Progress',style: TextStyle(fontSize: 20,),)),
               ],
             ),
             SizedBox(height: 8),
@@ -121,11 +126,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                       decoration: BoxDecoration(
-                        color: AppPallete.borderColor,
+                        color: AppPallete.gradient1,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.pinkAccent.withOpacity(0.2),
+                            color: AppPallete.gradient2.withOpacity(0.7),
                             blurRadius: 15,
                             spreadRadius: 2,
                             offset: Offset(0, 6),
@@ -135,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(dashboardItems[index]['icon'], size: 40, color: Colors.pinkAccent),
+                          Icon(dashboardItems[index]['icon'], size: 40, color: AppPallete.gradient3),
                           SizedBox(height: 10),
                           Text(
                             dashboardItems[index]['title'],
@@ -168,7 +173,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _currentIndex = index;
           });
         },
-        selectedItemColor: Colors.pinkAccent,
+        backgroundColor: AppPallete.accentFgColor,
+        selectedItemColor: AppPallete.gradient1,
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(

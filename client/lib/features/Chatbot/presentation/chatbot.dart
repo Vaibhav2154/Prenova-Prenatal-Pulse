@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'gemini_service.dart';
@@ -40,8 +41,6 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
     setState(() {
       messages.add({"role": "bot", "text": botResponse});
     });
-
-    _speak(botResponse);
   }
 
   Future<void> _pickImage() async {
@@ -86,7 +85,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Prenova AI Assistant"),
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: AppPallete.gradient1,
         centerTitle: true,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
@@ -111,7 +110,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
                     margin: EdgeInsets.symmetric(vertical: 6),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isUser ? Colors.pinkAccent : Color.fromARGB(255, 49, 48, 48),
+                      color: isUser ? AppPallete.gradient1 : Color.fromARGB(255, 49, 48, 48),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -129,7 +128,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
                           Row(
                             children: [
                               CircleAvatar(
-                                backgroundColor: Colors.pinkAccent,
+                                backgroundColor: AppPallete.gradient1,
                                 child: Icon(Icons.health_and_safety, color: Colors.white),
                               ),
                               SizedBox(width: 10),
@@ -168,11 +167,11 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
             child: Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.mic, color: _isListening ? Colors.red : Colors.pinkAccent, size: 30),
+                  icon: Icon(Icons.mic, color: _isListening ? Colors.red : AppPallete.gradient1, size: 30),
                   onPressed: _isListening ? _stopListening : _startListening,
                 ),
                 IconButton(
-                  icon: Icon(Icons.image, color: Colors.pinkAccent, size: 30),
+                  icon: Icon(Icons.image, color: AppPallete.gradient1, size: 30),
                   onPressed: _pickImage,
                 ),
                 Expanded(
@@ -180,15 +179,15 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
                     controller: _controller,
                     decoration: InputDecoration(
                       hintText: "Ask about pregnancy health...",
-                      hintStyle: TextStyle(color: Colors.white60),
+                      hintStyle: TextStyle(color: AppPallete.borderColor),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: AppPallete.secondaryFgColor),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send, color: Colors.pinkAccent, size: 30),
+                  icon: Icon(Icons.send, color: AppPallete.gradient1, size: 30),
                   onPressed: () => sendMessage(_controller.text.trim()),
                 ),
               ],
@@ -196,7 +195,6 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
           ),
         ],
       ),
-
     );
   }
 }

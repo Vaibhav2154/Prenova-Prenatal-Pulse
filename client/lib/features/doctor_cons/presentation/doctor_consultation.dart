@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DoctorConsultationPage extends StatelessWidget {
@@ -53,6 +54,10 @@ class DoctorConsultationPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Doctor Consultation', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
+        backgroundColor: AppPallete.gradient1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
