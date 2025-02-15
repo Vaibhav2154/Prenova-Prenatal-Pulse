@@ -98,19 +98,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   // Show date picker for due date selection
   Future<void> _selectDueDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2024),
-      lastDate: DateTime(2030),
-    );
+  final DateTime initialDate = DateTime.now(); // Set the initial date to today
+  final DateTime firstDate = DateTime(initialDate.year, initialDate.month - 10, initialDate.day); // 10 months before initial date
+  final DateTime lastDate = DateTime(initialDate.year, initialDate.month + 10, initialDate.day); // 10 months after initial date
 
-    if (pickedDate != null) {
-      setState(() {
-        dueDateController.text = pickedDate.toLocal().toString().split(' ')[0]; // Save only YYYY-MM-DD
-      });
-    }
+  DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: initialDate, // Set the initial date to today
+    firstDate: firstDate, // 10 months before today
+    lastDate: lastDate, // 10 months after today
+  );
+
+  if (pickedDate != null) {
+    setState(() {
+      dueDateController.text = pickedDate.toLocal().toString().split(' ')[0]; // Save only YYYY-MM-DD
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +129,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField("Username", usernameController),
+            _buildTextField("Full name", usernameController),
             _buildTextField("Height (cm)", heightController, isNumber: true),
             _buildTextField("Weight (kg)", weightController, isNumber: true),
             _buildTextField("Age", ageController, isNumber: true),
