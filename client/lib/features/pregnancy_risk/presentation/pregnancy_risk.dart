@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:prenova/features/auth/auth_service.dart';
 
 class PregnancyRiskScreen extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
   final TextEditingController bloodGlucoseController = TextEditingController();
   final TextEditingController bodyTempController = TextEditingController();
   final TextEditingController heartRateController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   String _prediction = "";
   bool _isLoading = false;
@@ -24,11 +26,13 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
       _prediction = "";
     });
 
-    final url = Uri.parse('http://10.0.2.2:5003/predict_maternal');
+    final url = Uri.parse('http://localhost:5003/predict_maternal');
     try {
+      final session = _authService.currentSession;
+      final token = session?.accessToken;
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {"Content-Type": "application/json",'Authorization':'Bearer $token'},
         body: jsonEncode({
           "age": double.tryParse(ageController.text) ?? 0.0,
           "systolic_bp": double.tryParse(systolicBPController.text) ?? 0.0,
@@ -171,7 +175,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
           ],
         ),
       ),
-      backgroundColor: Colors.black, // Keeping the dark theme
+      backgroundColor: Colors.white, // Keeping the dark theme
     );
   }
 }

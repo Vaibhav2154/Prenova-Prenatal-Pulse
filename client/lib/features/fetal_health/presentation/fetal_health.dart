@@ -21,7 +21,7 @@ class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
       _responseMessage = "";
     });
 
-    final url = Uri.parse('http://10.0.2.2:5000/predict');
+    final url = Uri.parse('http://localhost:5003/predict');
 
     try {
       final response = await http.post(

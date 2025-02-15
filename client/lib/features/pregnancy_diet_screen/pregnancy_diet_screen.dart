@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:prenova/core/theme/app_pallete.dart';
+import 'package:prenova/features/auth/auth_service.dart';
 
 class PregnancyDietScreen extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
   final TextEditingController weightController = TextEditingController();
   final TextEditingController healthController = TextEditingController();
   final TextEditingController dietController = TextEditingController();
+  final AuthService _authService = AuthService();
   String trimester = "First"; // Default selection
   String dietPlan = "";
   bool isLoading = false;
@@ -23,9 +25,12 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
     });
 
     try {
+      final session = _authService.currentSession;
+      final token = session?.accessToken;
+
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:5003/diet_plan"),
-        headers: {"Content-Type": "application/json"},
+        Uri.parse("http://localhost:5003/diet_plan"),
+        headers: {"Content-Type": "application/json",'Authorization':'Bearer $token'},
         body: jsonEncode({
           "trimester": trimester,
           "weight": weightController.text.trim(),

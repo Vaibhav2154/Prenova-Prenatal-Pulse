@@ -277,6 +277,7 @@ def pregnancy_diet():
 
         user_data = supabase.auth.get_user(token)
 
+
         if not user_data:
             return {'error': 'Invalid token'}, 401
         
