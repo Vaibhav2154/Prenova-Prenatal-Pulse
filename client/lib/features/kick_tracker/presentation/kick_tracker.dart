@@ -55,13 +55,14 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       _pauseTracking();
+      _saveSession(); // Automatically save session on pause
     }
   }
 
   Future<void> _loadSessions() async {
     try {
       final response = await _supabase
-          .from('kick_session')
+          .from('kick_sessions') // Corrected table name
           .select()
           .order('created_at', ascending: false);
 
@@ -83,8 +84,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
 
   List<FlSpot> _parseChartData(List<dynamic> data) {
     return data
-        .map<FlSpot>(
-            (point) => FlSpot(point['x'].toDouble(), point['y'].toDouble()))
+        .map<FlSpot>((point) => FlSpot(point['x'].toDouble(), point['y'].toDouble()))
         .toList();
   }
 
@@ -113,8 +113,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _elapsedSeconds++;
-        _currentData
-            .add(FlSpot(_elapsedSeconds.toDouble(), _kickCount.toDouble()));
+        _currentData.add(FlSpot(_elapsedSeconds.toDouble(), _kickCount.toDouble()));
       });
     });
   }
@@ -141,7 +140,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
   void _resetCounters() {
     _elapsedSeconds = 0;
     _kickCount = 0;
-    _currentData.clear();
+    _currentData.clear();  // Make sure to clear the chart data when resetting
   }
 
   void _showError(String message) {
@@ -183,7 +182,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           minX: 0,
           maxX: _elapsedSeconds.toDouble(),
           minY: 0,
-          maxY: _kickCount.toDouble() + 5,
+          maxY: (_kickCount.toDouble() + 5).clamp(0.0, double.infinity), // Dynamic maxY
           titlesData: FlTitlesData(
             bottomTitles: AxisTitles(sideTitles: _bottomTitles),
             leftTitles: AxisTitles(sideTitles: _leftTitles),
@@ -192,7 +191,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           borderData: FlBorderData(show: false),
           lineBarsData: [
             LineChartBarData(
-              spots: _currentData,
+              spots: _currentData.isEmpty ? [FlSpot(0, 0)] : _currentData, // Ensure chart is not empty
               isCurved: true,
               color: Colors.pink,
               barWidth: 3,

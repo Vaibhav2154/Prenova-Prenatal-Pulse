@@ -1,0 +1,2 @@
+E:/hackathon/Prenova-Prenatal-Pulse/client/android/app/.cxx/Debug/5q1r4sw6/x86/CMakeFiles/edit_cache.dir
+E:/hackathon/Prenova-Prenatal-Pulse/client/android/app/.cxx/Debug/5q1r4sw6/x86/CMakeFiles/rebuild_cache.dir
