@@ -4,7 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
-import 'gemini_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:prenova/features/auth/auth_service.dart';
 
 class PregnancyChatScreen extends StatefulWidget {
   @override
@@ -13,71 +15,60 @@ class PregnancyChatScreen extends StatefulWidget {
 
 class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final GeminiService geminiService = GeminiService();
   List<Map<String, dynamic>> messages = [];
-  File? _selectedImage;
-  stt.SpeechToText _speech = stt.SpeechToText();
-  FlutterTts _tts = FlutterTts();
-  bool _isListening = false;
-  String _voiceInput = "";
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
-    _speech.initialize();
+    fetchChatHistory();
   }
 
-  void sendMessage(String userMessage) async {
-    if (userMessage.isEmpty && _selectedImage == null) return;
-
-    setState(() {
-      messages.add({"role": "user", "text": userMessage, "image": _selectedImage});
-      _controller.clear();
-      _selectedImage = null;
-    });
-
-    String botResponse = await geminiService.sendMessage(userMessage);
-
-    setState(() {
-      messages.add({"role": "bot", "text": botResponse});
-    });
-  }
-
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
+  Future<void> fetchChatHistory() async {
+    final session = _authService.currentSession;
+    final token = session?.accessToken;
+    final response = await http.get(Uri.parse("http://localhost:5003/chat"),headers: {"Authorization": "Bearer $token"});
+    if (response.statusCode == 200) {
+      final List<dynamic> history = jsonDecode(response.body);
       setState(() {
-        _selectedImage = File(pickedFile.path);
+        messages = history
+            .map((e) => {
+                  "role": e["role"],
+                  "content": e["content"].replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), ''),
+                })
+            .toList();
       });
     }
   }
 
-  void _startListening() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize();
-      if (available) {
-        setState(() => _isListening = true);
-        _speech.listen(onResult: (result) {
-          setState(() {
-            _voiceInput = result.recognizedWords;
-          });
-        });
-      }
-    }
-  }
+  void sendMessage(String userMessage) async {
+    final session = _authService.currentSession;
+    final token = session?.accessToken;
+    if (userMessage.isEmpty) return;
 
-  void _stopListening() {
-    if (_isListening) {
-      setState(() => _isListening = false);
-      _speech.stop();
-      sendMessage(_voiceInput);
-    }
-  }
+    setState(() {
+      messages.add({"role": "user", "content": userMessage});
+      _controller.clear();
+    });
 
-  Future<void> _speak(String text) async {
-    await _tts.speak(text);
+    final response = await http.post(
+      Uri.parse("http://localhost:5003/chat"),
+      headers: {"Content-Type": "application/json",'Authorization':'Bearer $token'},
+      body: jsonEncode({"message": userMessage.replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), '')}),
+    );
+    fetchChatHistory();
+    // if (response.statusCode == 200) {
+    //   final responseData = jsonDecode(response.body);
+    //   String botResponse = responseData['content'];
+    //   print(response.body);
+    //   setState(() {
+    //     messages.add({"role": "bot", "content": botResponse.replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), '')});
+    //   });
+    // } else {
+    //   setState(() {
+    //     messages.add({"role": "bot", "content": "Error: unable to fetch response."});
+    //   });
+    // }
   }
 
   @override
@@ -110,7 +101,9 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
                     margin: EdgeInsets.symmetric(vertical: 6),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isUser ? AppPallete.gradient1 : Color.fromARGB(255, 49, 48, 48),
+                      color: isUser
+                          ? AppPallete.gradient1
+                          : Color.fromARGB(255, 49, 48, 48),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -129,30 +122,22 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
                             children: [
                               CircleAvatar(
                                 backgroundColor: AppPallete.gradient1,
-                                child: Icon(Icons.health_and_safety, color: Colors.white),
+                                child: Icon(Icons.health_and_safety,
+                                    color: Colors.white),
                               ),
                               SizedBox(width: 10),
-                              Text("Prenova", style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text("Prenova",
+                                  style: TextStyle(fontWeight: FontWeight.bold)),
                             ],
                           ),
                           SizedBox(height: 5),
                         ],
-                        if (message["image"] != null)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(
-                              message["image"],
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        if (message["text"] != null)
+                        if (message["content"] != null)
                           Padding(
                             padding: EdgeInsets.only(top: 5),
                             child: Text(
-                              message["text"],
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              message["content"],
+                              style: TextStyle(fontSize: 16, color: isUser ? Colors.black : Colors.white),
                             ),
                           ),
                       ],
@@ -166,14 +151,6 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
             padding: EdgeInsets.all(12),
             child: Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.mic, color: _isListening ? Colors.red : AppPallete.gradient1, size: 30),
-                  onPressed: _isListening ? _stopListening : _startListening,
-                ),
-                IconButton(
-                  icon: Icon(Icons.image, color: AppPallete.gradient1, size: 30),
-                  onPressed: _pickImage,
-                ),
                 Expanded(
                   child: TextField(
                     controller: _controller,
@@ -181,7 +158,8 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
                       hintText: "Ask about pregnancy health...",
                       hintStyle: TextStyle(color: AppPallete.borderColor),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                     ),
                     style: TextStyle(color: AppPallete.secondaryFgColor),
                   ),

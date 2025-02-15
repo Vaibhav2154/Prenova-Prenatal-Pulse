@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:prenova/features/auth/auth_service.dart';
 
 class PostFetalHealthScreen extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
   final TextEditingController baselineValueController = TextEditingController();
   final TextEditingController accelerationsController = TextEditingController();
   final TextEditingController fetalMovementController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   String _responseMessage = "";
   bool _isLoading = false;
@@ -21,12 +23,14 @@ class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
       _responseMessage = "";
     });
 
-    final url = Uri.parse('http://10.0.2.2:5000/predict');
+    final url = Uri.parse('http://localhost:5003/predict_fetal');
 
     try {
+      final session = _authService.currentSession;
+      final token = session?.accessToken;
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json','Authorization':'Bearer $token'},
         body: jsonEncode({
           "baseline value": double.tryParse(baselineValueController.text) ?? 0.0,
           "accelerations": double.tryParse(accelerationsController.text) ?? 0.0,
