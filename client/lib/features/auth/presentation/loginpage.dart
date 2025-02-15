@@ -4,6 +4,7 @@ import 'package:prenova/core/theme/starry_bg.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/glowing_btn.dart';
 import 'package:prenova/features/auth/presentation/registerpage.dart';
+import 'package:prenova/features/auth/presentation/onboarding.dart';
 import 'package:prenova/features/dashboard/presentation/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 //import 'package:unihub/pages/forgotpassword.dart';
@@ -38,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  DashboardScreen()),
+          MaterialPageRoute(builder: (context) =>  OnboardingPage()),
         );
       }
     } catch (e) {
