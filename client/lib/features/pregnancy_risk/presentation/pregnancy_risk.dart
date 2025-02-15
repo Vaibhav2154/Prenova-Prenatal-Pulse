@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:prenova/core/theme/app_pallete.dart';
 import 'dart:convert';
@@ -10,6 +11,8 @@ class PregnancyRiskScreen extends StatefulWidget {
 }
 
 class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
+  final SupabaseClient supabase = Supabase.instance.client;
+
   final TextEditingController ageController = TextEditingController();
   final TextEditingController systolicBPController = TextEditingController();
   final TextEditingController diastolicBPController = TextEditingController();
@@ -20,8 +23,15 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
 
   String _prediction = "";
   bool _isLoading = false;
+  late Future<List<Map<String, dynamic>>> _previousSubmissions;
 
-  Future<void> _predict() async {
+  @override
+  void initState() {
+    super.initState();
+    _previousSubmissions = _fetchPreviousSubmissions();
+  }
+
+  Future<void> _predictAndSave() async {
     setState(() {
       _isLoading = true;
       _prediction = "";
@@ -47,8 +57,22 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         if (data.containsKey('prediction')) {
+          String result = data['prediction'];
+
+          await supabase.from('vitals').insert({
+            "age": double.tryParse(ageController.text) ?? 0.0,
+            "systolic_bp": double.tryParse(systolicBPController.text) ?? 0.0,
+            "diastolic_bp": double.tryParse(diastolicBPController.text) ?? 0.0,
+            "blood_glucose": double.tryParse(bloodGlucoseController.text) ?? 0.0,
+            "body_temp": double.tryParse(bodyTempController.text) ?? 0.0,
+            "heart_rate": double.tryParse(heartRateController.text) ?? 0.0,
+            "prediction": result,
+            "created_at": DateTime.now().toIso8601String(),
+          });
+
           setState(() {
-            _prediction = "Predicted Risk Level: ${data['prediction']}";
+            _prediction = "Predicted Risk Level: $result";
+            _previousSubmissions = _fetchPreviousSubmissions(); // Refresh table
           });
         } else {
           setState(() {
@@ -71,50 +95,74 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
     }
   }
 
-  void _clearFields() {
-    ageController.clear();
-    systolicBPController.clear();
-    diastolicBPController.clear();
-    bloodGlucoseController.clear();
-    bodyTempController.clear();
-    heartRateController.clear();
-    setState(() {
-      _prediction = "";
-    });
+  Future<List<Map<String, dynamic>>> _fetchPreviousSubmissions() async {
+    final response = await supabase
+        .from('vitals')
+        .select("*")
+        .order('created_at', ascending: false);
+
+    return response.map<Map<String, dynamic>>((data) => data).toList();
+  }
+
+  String formatDate(String dateString) {
+    DateTime dateTime = DateTime.parse(dateString);
+    return "${dateTime.day}-${dateTime.month}-${dateTime.year} ${dateTime.hour}:${dateTime.minute}";
   }
 
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Focus(
-        child: Builder(
-          builder: (context) {
-            final isFocused = Focus.of(context).hasFocus;
-            return TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.grey[900],
-                prefixIcon: Icon(Icons.health_and_safety, color: Colors.pinkAccent),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.grey[700]!, width: 1.2),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(color: Colors.pinkAccent, width: 2),
-                ),
-              ),
-            );
-          },
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        style: TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.white70),
+          filled: true,
+          fillColor: Colors.grey[900],
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: Colors.grey[700]!, width: 1.2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: Colors.pinkAccent, width: 2),
+          ),
         ),
       ),
     );
   }
+
+ Widget _buildTable(List<Map<String, dynamic>> vitals) {
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: DataTable(
+      border: TableBorder.all(color: Colors.black),
+      columns: [
+        DataColumn(label: Text('Date', style: TextStyle(color: Colors.black))),
+        DataColumn(label: Text('Sys BP', style: TextStyle(color: Colors.black))),
+        DataColumn(label: Text('Dia BP', style: TextStyle(color: Colors.black))),
+        DataColumn(label: Text('Glucose', style: TextStyle(color: Colors.black))),
+        DataColumn(label: Text('Temp', style: TextStyle(color: Colors.black))),
+        DataColumn(label: Text('HR', style: TextStyle(color: Colors.black))),
+        DataColumn(label: Text('Risk', style: TextStyle(color: Colors.black))),
+      ],
+      rows: vitals.map((vital) {
+        return DataRow(cells: [
+          DataCell(Text(formatDate(vital['created_at'].toString()), style: TextStyle(color: Colors.black))),
+          DataCell(Text(vital['systolic_bp'].toString(), style: TextStyle(color: Colors.black))),
+          DataCell(Text(vital['diastolic_bp'].toString(), style: TextStyle(color: Colors.black))),
+          DataCell(Text(vital['blood_glucose'].toString(), style: TextStyle(color: Colors.black))),
+          DataCell(Text(vital['body_temp'].toString(), style: TextStyle(color: Colors.black))),
+          DataCell(Text(vital['heart_rate'].toString(), style: TextStyle(color: Colors.black))),
+          DataCell(Text(vital['prediction'].toString(), style: TextStyle(color: Colors.black))),
+        ]);
+      }).toList(),
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +172,6 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
         centerTitle: true,
         backgroundColor: Colors.pinkAccent,
         elevation: 5,
-        shadowColor: Colors.pinkAccent.withOpacity(0.5),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -140,43 +187,33 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
 
             _isLoading
                 ? CircularProgressIndicator(color: Colors.pinkAccent)
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                          backgroundColor: Colors.pinkAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: _predict,
-                        child: Text('Predict Risk', style: TextStyle(fontSize: 16)),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                          backgroundColor: Colors.grey[700],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: _clearFields,
-                        child: Text('Clear', style: TextStyle(fontSize: 16, color: Colors.white)),
-                      ),
-                    ],
+                : ElevatedButton(
+                    onPressed: _predictAndSave,
+                    child: Text('Predict & Save'),
                   ),
+
             SizedBox(height: 20),
+<<<<<<< HEAD
             Text(
               _prediction,
               style: TextStyle(fontSize: 18, color: AppPallete.textColor),
               textAlign: TextAlign.center,
+=======
+            Text(_prediction, style: TextStyle(color: Colors.white)),
+
+            SizedBox(height: 30),
+            Text('Previous Submissions', style: TextStyle(color: Colors.white, fontSize: 20)),
+            FutureBuilder<List<Map<String, dynamic>>>(
+              future: _previousSubmissions,
+              builder: (context, snapshot) {
+                return snapshot.hasData ? _buildTable(snapshot.data!) : CircularProgressIndicator();
+              },
+>>>>>>> 6fd82b3a8744e47a5cf5d1909f78ec47bedb0534
             ),
           ],
         ),
       ),
-      backgroundColor: Colors.white, // Keeping the dark theme
+// Keeping the dark theme
     );
   }
 }

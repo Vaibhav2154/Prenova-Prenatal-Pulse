@@ -5,9 +5,7 @@ import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/glowing_btn.dart';
 import 'package:prenova/features/auth/presentation/registerpage.dart';
 import 'package:prenova/features/auth/presentation/onboarding.dart';
-import 'package:prenova/features/dashboard/presentation/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-//import 'package:unihub/pages/forgotpassword.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -32,20 +30,41 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-
     try {
       await authservice.signInWithEmailPassword(email, password);
 
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  OnboardingPage()),
+          MaterialPageRoute(builder: (context) => const OnboardingPage()),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e is AuthException ? e.message : "Something went wrong!"}")),
+        );
+      }
+    }
+  }
+
+  void _signInWithGoogle() async {
+    try {
+      await authservice.signInWithGoogle();
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingPage()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Error: ${e is AuthException ? e.message : "Google Sign-in failed!"}",
+            ),
+          ),
         );
       }
     }
@@ -63,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 50,),
+                  const SizedBox(height: 50),
                   Image.asset(
                     'assets/logo.png',
                     height: 320,
@@ -80,10 +99,11 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: _emailcontroller,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(labelText: "Email",
-                    hoverColor: AppPallete.errorColor,
-                    prefixIcon: const Icon(Icons.email, color: Colors.grey),
-                    focusColor: AppPallete.borderColor
+                    decoration: const InputDecoration(
+                      labelText: "Email",
+                      hoverColor: AppPallete.errorColor,
+                      prefixIcon: Icon(Icons.email, color: Colors.grey),
+                      focusColor: AppPallete.borderColor,
                     ),
                     style: TextStyle(color: AppPallete.textColor),
                   ),
@@ -91,12 +111,13 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: _passwordcontroller,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: "Password",
-                    prefixIcon: const Icon(Icons.lock, color: Colors.grey),
+                    decoration: const InputDecoration(
+                      labelText: "Password",
+                      prefixIcon: Icon(Icons.lock, color: Colors.grey),
                     ),
                     style: TextStyle(color: AppPallete.textColor),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
                   SizedBox(
                     width: 200,
                     height: 60,
@@ -106,7 +127,35 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-
+                  // White Google Sign-In Button with Icon
+                  ElevatedButton(
+                    onPressed: _signInWithGoogle,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white, // White background
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        
+                        const SizedBox(width: 10),
+                        const Text(
+                          "Sign in with Google",
+                          style: TextStyle(
+                            color: Colors.black87, // Black text
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
@@ -115,8 +164,9 @@ class _LoginPageState extends State<LoginPage> {
                         MaterialPageRoute(builder: (context) => const RegisterPage()),
                       );
                     },
-                    child: const Text("Don't have an account? Sign up",
-                    style: TextStyle(color: AppPallete.textColor),
+                    child: const Text(
+                      "Don't have an account? Sign up",
+                      style: TextStyle(color: AppPallete.textColor),
                     ),
                   ),
                 ],
