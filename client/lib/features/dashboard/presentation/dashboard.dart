@@ -6,7 +6,7 @@ import 'package:prenova/features/auth/presentation/Profilepage.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
 // import 'package:prenova/features/fetal_health/presentation/fetal_health.dart';
 // import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
-// import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
+import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
 // import 'package:prenova/features/contraction_timer/presentation/contraction_timer.dart';
 import 'package:prenova/features/chatbot/presentation/chatbot.dart';
 import 'package:prenova/features/pregnancy_diet_screen/pregnancy_diet_screen.dart';
@@ -44,14 +44,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               context, MaterialPageRoute(builder: (context) => PregnancyRiskScreen()));
         }
       },
-      // {
-      //   'title': 'Kick Tracker',
-      //   'icon': LucideIcons.footprints,
-      //   'onPressed': () {
-      //     Navigator.push(
-      //         context, MaterialPageRoute(builder: (context) => KickTrackerScreen()));
-      //   }
-      // },
+      {
+        'title': 'Kick Tracker',
+        'icon': LucideIcons.footprints,
+        'onPressed': () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => KickTrackerScreen()));
+        }
+      },
       // {
       //   'title': 'Contraction Timer',
       //   'icon': LucideIcons.timer,

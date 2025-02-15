@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 class PregnancyRiskScreen extends StatefulWidget {
   @override
   _PregnancyRiskScreenState createState() => _PregnancyRiskScreenState();
 }
+
 class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController systolicBPController = TextEditingController();
@@ -12,14 +14,17 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
   final TextEditingController bloodGlucoseController = TextEditingController();
   final TextEditingController bodyTempController = TextEditingController();
   final TextEditingController heartRateController = TextEditingController();
+
   String _prediction = "";
   bool _isLoading = false;
+
   Future<void> _predict() async {
     setState(() {
       _isLoading = true;
       _prediction = "";
     });
-    final url = Uri.parse('http://10.0.2.2:5000/predict_maternal'); // Update if deployed
+
+    final url = Uri.parse('http://10.0.2.2:5003/predict_maternal');
     try {
       final response = await http.post(
         url,
@@ -33,12 +38,12 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
           "heart_rate": double.tryParse(heartRateController.text) ?? 0.0,
         }),
       );
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         if (data.containsKey('prediction')) {
           setState(() {
             _prediction = "Predicted Risk Level: ${data['prediction']}";
-
           });
         } else {
           setState(() {
@@ -60,6 +65,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
       });
     }
   }
+
   void _clearFields() {
     ageController.clear();
     systolicBPController.clear();
@@ -74,20 +80,32 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
 
   Widget _buildTextField(String label, TextEditingController controller) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        style: TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.white70),
-          filled: true,
-          fillColor: Colors.grey[850],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Focus(
+        child: Builder(
+          builder: (context) {
+            final isFocused = Focus.of(context).hasFocus;
+            return TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: TextStyle(color: Colors.white70),
+                filled: true,
+                fillColor: Colors.grey[900],
+                prefixIcon: Icon(Icons.health_and_safety, color: Colors.pinkAccent),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: Colors.grey[700]!, width: 1.2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(color: Colors.pinkAccent, width: 2),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -97,11 +115,11 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pregnancy Risk Detection',
-            style: TextStyle(color: Colors.white)),
+        title: Text('Pregnancy Risk Detection', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.pinkAccent,
-        elevation: 0,
+        elevation: 5,
+        shadowColor: Colors.pinkAccent.withOpacity(0.5),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -115,36 +133,32 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
             _buildTextField('Heart Rate (bpm)', heartRateController),
             SizedBox(height: 20),
 
-            _isLoading ? CircularProgressIndicator(color: Colors.pinkAccent)
+            _isLoading
+                ? CircularProgressIndicator(color: Colors.pinkAccent)
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                           backgroundColor: Colors.pinkAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: _predict,
-                        child: Text('Predict Risk',
-                            style: TextStyle(fontSize: 16)),
+                        child: Text('Predict Risk', style: TextStyle(fontSize: 16)),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 15),
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                           backgroundColor: Colors.grey[700],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: _clearFields,
-                        child: Text('Clear',
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.white)),
+                        child: Text('Clear', style: TextStyle(fontSize: 16, color: Colors.white)),
                       ),
                     ],
                   ),
@@ -157,6 +171,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
           ],
         ),
       ),
+      backgroundColor: Colors.black, // Keeping the dark theme
     );
   }
 }
