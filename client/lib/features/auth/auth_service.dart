@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
@@ -76,4 +77,17 @@ class AuthService {
 
   // Listen to auth state changes
   Stream<AuthState> get authStateChanges => supabase.auth.onAuthStateChange;
+
+  // Sign in with Google
+  Future<void> signInWithGoogle() async {
+    try {
+      // Trigger Google OAuth flow
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.google, // Use the correct provider enum
+        redirectTo: 'https://xgfvhqskjdgcfynnbpky.supabase.co/auth/v1/callback', // Your custom redirect URL
+      );
+    } catch (e) {
+      throw Exception('Google Sign-in error: $e');
+    }
+  }
 }

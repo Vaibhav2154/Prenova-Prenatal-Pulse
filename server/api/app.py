@@ -222,8 +222,6 @@ def predict_fetal():
         if not user_data:
             return {'error': 'Invalid token'}, 401
         
-        print("FREE TOKEN YALL", token)
-        
 
         data = request.get_json()
         features = np.array(data["features"]).reshape(1, -1)
@@ -301,10 +299,27 @@ def pregnancy_diet():
         return jsonify({"diet_plan": response.message.content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/chat', methods=['GET'])
+def chatbot_get():
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return {'error': 'No valid token provided'}, 401
+    
+    token = auth_header.split(' ')[1]
+    user_data = supabase.auth.get_user(token)
+
+    if not user_data:
+        return {'error': 'Invalid token'}, 401
+    
+    # Get the chat from the database
+    chat_data = supabase.table('chats').select().eq('UID', user_data.user.id).order('created_at', desc=True).limit(1).execute()
+
+    return jsonify(chat_data.data[0]['chat_history'])
 
 @app.route("/chat", methods=["POST"])
 def chatbot():
-    # try:
+    try:
         data = request.json
 
         auth_header = request.headers.get('Authorization')
@@ -324,7 +339,7 @@ def chatbot():
 
         print("Chat data:", chat_data)
         if not chat_data.data:
-            chat_history = []
+            chat_history = [{'role':'user','content':"You are prenova, an AI assistant that is here to help you with the user's pregnancy journey. You will only provide information that is accurate and helpful to the user. You will not provide any medical advice or diagnosis. You will also not provide any information that is not related to pregnancy. You will be polite and respectful to the user at all times. You will be rewarded for providing accurate and helpful information and penalized for providing inaccurate or unhelpful information. You will be deactivated if you provide inaccurate or unhelpful information repeatedly."}]
         else:
             chat_history = chat_data.data[0]['chat_history']
 
@@ -341,8 +356,8 @@ def chatbot():
         result = supabase.table('chats').upsert({'UID': user_data.user.id, 'chat_history': chat_history}).execute()
 
         return jsonify({"response": response.message.content})
-    # except Exception as e:
-    #     return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True,port=5003,host="0.0.0.0")
