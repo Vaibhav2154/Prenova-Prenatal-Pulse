@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class KickSession {
@@ -36,6 +38,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
   var _kickCount = 0;
   var _isTracking = false;
   var _sessionId = '';
+  var _isButtonDisabled = false; // New state variable for button cooldown
 
   @override
   void initState() {
@@ -51,18 +54,10 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      _pauseTracking();
-      _saveSession(); // Automatically save session on pause
-    }
-  }
-
   Future<void> _loadSessions() async {
     try {
       final response = await _supabase
-          .from('kick_sessions') // Corrected table name
+          .from('kick_sessions')
           .select()
           .order('created_at', ascending: false);
 
@@ -72,7 +67,9 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                 kickCount: session['kick_count'],
                 duration: session['elapsed_seconds'],
                 createdAt: DateTime.parse(session['created_at']),
-                data: _parseChartData(session['kick_data']),
+                data: _parseChartData(session['kick_data'] is String
+                    ? List<Map<String, dynamic>>.from(jsonDecode(session['kick_data']))
+                    : session['kick_data']),
               ))
           .toList();
 
@@ -94,7 +91,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
         'session_id': _sessionId,
         'kick_count': _kickCount,
         'elapsed_seconds': _elapsedSeconds,
-        'kick_data': _currentData.map((p) => {'x': p.x, 'y': p.y}).toList(),
+        'kick_data': jsonEncode(_currentData.map((p) => {'x': p.x, 'y': p.y}).toList()),
         'created_at': DateTime.now().toIso8601String(),
       });
       await _loadSessions();
@@ -124,23 +121,26 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     await _saveSession();
   }
 
-  void _pauseTracking() {
-    if (_isTracking) {
-      _timer?.cancel();
-      setState(() => _isTracking = false);
-    }
-  }
-
   void _recordKick() {
-    if (_isTracking) {
-      setState(() => _kickCount++);
+    if (_isTracking && !_isButtonDisabled) {
+      setState(() {
+        _kickCount++;
+        _isButtonDisabled = true;
+      });
+      
+      Timer(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() => _isButtonDisabled = false);
+        }
+      });
     }
   }
 
   void _resetCounters() {
     _elapsedSeconds = 0;
     _kickCount = 0;
-    _currentData.clear();  // Make sure to clear the chart data when resetting
+    _currentData.clear();
+    _isButtonDisabled = false;
   }
 
   void _showError(String message) {
@@ -154,13 +154,6 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Baby Kick Tracker'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: _showSessionHistory,
-            tooltip: 'Session History',
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -169,6 +162,10 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           _buildStatsRow(),
           const SizedBox(height: 24),
           _buildControls(),
+          const SizedBox(height: 16),
+          Expanded(
+            child: _buildSessionList(),
+          ),
         ],
       ),
     );
@@ -182,16 +179,17 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           minX: 0,
           maxX: _elapsedSeconds.toDouble(),
           minY: 0,
-          maxY: (_kickCount.toDouble() + 5).clamp(0.0, double.infinity), // Dynamic maxY
+          maxY: (_kickCount.toDouble() + 5).clamp(0.0, double.infinity),
           titlesData: FlTitlesData(
             bottomTitles: AxisTitles(sideTitles: _bottomTitles),
             leftTitles: AxisTitles(sideTitles: _leftTitles),
           ),
+          backgroundColor: AppPallete.textColor,
           gridData: const FlGridData(show: true),
           borderData: FlBorderData(show: false),
           lineBarsData: [
             LineChartBarData(
-              spots: _currentData.isEmpty ? [FlSpot(0, 0)] : _currentData, // Ensure chart is not empty
+              spots: _currentData.isEmpty ? [FlSpot(0, 0)] : _currentData,
               isCurved: true,
               color: Colors.pink,
               barWidth: 3,
@@ -251,74 +249,55 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
         ),
         const SizedBox(width: 20),
         FloatingActionButton(
-          onPressed: _recordKick,
-          backgroundColor: Colors.pink,
+          onPressed: _isButtonDisabled || !_isTracking ? null : _recordKick,
+          backgroundColor: _isButtonDisabled 
+              ? Colors.pink.withOpacity(0.5)
+              : Colors.pink,
           child: const Icon(Icons.favorite_border, size: 28),
         ),
       ],
     );
   }
 
-  void _showSessionHistory() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Session History'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: _sessions.length,
-            itemBuilder: (_, index) => ListTile(
-              title: Text('Session ${index + 1}'),
-              subtitle: Text(
-                '${_sessions[index].kickCount} kicks - '
-                '${_sessions[index].duration}s',
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => _deleteSession(_sessions[index].id),
-              ),
+  Widget _buildSessionList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: _sessions.length,
+      itemBuilder: (context, index) {
+        final session = _sessions[index];
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: ListTile(
+            title: Text('Session ${index + 1}'),
+            subtitle: Text(
+              '${session.kickCount} kicks in ${session.duration} seconds',
+            ),
+            trailing: Text(
+              '${session.createdAt.day}/${session.createdAt.month}/${session.createdAt.year}',
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
-  }
-
-  Future<void> _deleteSession(String id) async {
-    try {
-      await _supabase.from('kick_sessions').delete().eq('session_id', id);
-      await _loadSessions();
-      if (mounted) Navigator.pop(context);
-    } catch (e) {
-      _showError('Failed to delete session: ${e.toString()}');
-    }
   }
 }
 
 class _StatBadge extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String title;
   final String value;
 
-  const _StatBadge(this.icon, this.label, this.value);
+  const _StatBadge(this.icon, this.title, this.value, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.pink.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: 24, color: Colors.pink),
-        ),
-        const SizedBox(height: 8),
-        Text(value, style: Theme.of(context).textTheme.titleLarge),
-        Text(label, style: Theme.of(context).textTheme.bodySmall),
+        Icon(icon, size: 32, color: Colors.pink),
+        const SizedBox(height: 4),
+        Text(title, style: const TextStyle(fontSize: 12)),
+        const SizedBox(height: 4),
+        Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
   }
