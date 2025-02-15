@@ -6,10 +6,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 from ollama import chat
+from flask_cors import CORS
 
 from supabase import create_client, Client
 
 app = Flask(__name__)
+CORS(app)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
@@ -19,13 +21,8 @@ OLLAMA_MODEL_ID = os.environ.get("OLLAMA_MODEL_ID")
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise ValueError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
 
-try:
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    response = supabase.table("test").select("*").execute()
-    print(response)
-except Exception as e:
-    print(f"Error connecting to Supabase: {str(e)}")
-    supabase = None
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 # Load trained models and scalers
 maternal_model = joblib.load("finalized_maternal_model.sav")
@@ -38,7 +35,8 @@ fetal_scaler = joblib.load("scaleX1.pkl")
 @app.route("/predict_maternal", methods=["POST"])
 def predict_maternal():
     try:
-        # user_response = supabase.auth.get_user()
+        user_response = supabase.auth.get_user()
+        print("Hiiiiii",user_response)
         data = request.json
         features = [
             float(data["age"]),
@@ -135,4 +133,4 @@ def chatbot():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True,port=5003)
+    app.run(debug=True,port=5003,host="0.0.0.0")

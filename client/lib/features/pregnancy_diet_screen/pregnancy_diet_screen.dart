@@ -23,7 +23,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:5003/pregnancy-diet"),
+        Uri.parse("http://10.0.2.2:5003/diet_plan"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "trimester": trimester,

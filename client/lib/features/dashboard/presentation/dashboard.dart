@@ -11,7 +11,7 @@ import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
 import 'package:prenova/features/chatbot/presentation/chatbot.dart';
 import 'package:prenova/features/pregnancy_diet_screen/pregnancy_diet_screen.dart';
 // import 'package:prenova/features/medical_docs/presentation/upload_docs.dart';
-// import 'package:prenova/features/doctor_cons/presentation/doctor_consulation.dart';
+import 'package:prenova/features/doctor_cons/presentation/doctor_consultation.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -66,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       PregnancyChatScreen(),
       PregnancyDietScreen(),
       // UploadDocsScreen(),
-      // DoctorConsultationPage(),
+      DoctorConsultationPage(),
     ];
 
     return Scaffold(
@@ -179,12 +179,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             label: 'Diet Plan',
           ),
           BottomNavigationBarItem(
-            icon: Icon(LucideIcons.file),
-            label: 'Upload Docs',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(LucideIcons.stethoscope),
             label: 'Doctor',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(LucideIcons.file),
+            label: 'Upload Docs',
           ),
         ],
       ),
