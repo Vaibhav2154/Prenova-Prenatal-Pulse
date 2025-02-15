@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'dart:convert';
 import 'package:prenova/features/auth/auth_service.dart';
 
@@ -169,7 +170,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
             SizedBox(height: 20),
             Text(
               _prediction,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(fontSize: 18, color: AppPallete.textColor),
               textAlign: TextAlign.center,
             ),
           ],

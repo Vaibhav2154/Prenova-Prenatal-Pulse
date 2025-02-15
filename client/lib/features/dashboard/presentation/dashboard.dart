@@ -5,7 +5,7 @@ import 'package:prenova/features/MedicalDocuments/medical_documents.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/Profilepage.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
-// import 'package:prenova/features/fetal_health/presentation/fetal_health.dart';
+import 'package:prenova/features/fetal_health/presentation/fetal_health.dart';
 // import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
 import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
 // import 'package:prenova/features/contraction_timer/presentation/contraction_timer.dart';
@@ -29,14 +29,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     String username = userEmail.split('@')[0];
 
     final List<Map<String, dynamic>> dashboardItems = [
-      // {
-      //   'title': 'Fetal Health Monitoring',
-      //   'icon': LucideIcons.baby,
-      //   'onPressed': () {
-      //     Navigator.push(
-      //         context, MaterialPageRoute(builder: (context) => FetalHealthScreen()));
-      //   }
-      // },
+      {
+        'title': 'Fetal Health Monitoring',
+        'icon': LucideIcons.baby,
+        'onPressed': () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => PostFetalHealthScreen()));
+        }
+      },
       {
         'title': 'Vitals Monitoring',
         'icon': LucideIcons.heartPulse,

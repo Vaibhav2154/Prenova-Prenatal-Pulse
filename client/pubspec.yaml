@@ -53,7 +53,7 @@ dependencies:
   flutter_tts: ^4.2.2
   cached_network_image: ^3.4.1
     # Ensure this is up-to-date
-
+  flutter_markdown:
 
 dev_dependencies:
   flutter_test:
