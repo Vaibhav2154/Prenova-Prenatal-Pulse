@@ -1,44 +1,37 @@
-
-import numpy as np
 from flask import Flask, request, jsonify
-import joblib
-# Load the trained model and scaler
-model_path = "fetal_health_model.sav"
-scaler_path = "scaleX1.pkl"
+from flask_cors import CORS
+import ollama
+import PyPDF2
+import io
 
-with open(model_path, "rb") as model_file:
-    model = joblib.load(model_file)
-
-with open(scaler_path, "rb") as scaler_file:
-    scaler = joblib.load(scaler_file)
-    print("Scaler expects feature count:", scaler.n_features_in_)
-
-# Initialize Flask app
 app = Flask(__name__)
+CORS(app)  # Allow CORS for Flutter frontend
 
-@app.route('/')
-def home():
-    return "Fetal Health Prediction API is running. Use /predict to get predictions."
+def extract_text_from_pdf(pdf_bytes):
+    """Extracts text from a PDF file."""
+    pdf_reader = PyPDF2.PdfReader(io.BytesIO(pdf_bytes))
+    text = ''
+    for page in pdf_reader.pages:
+        text += page.extract_text() + "\n"
+    return text
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        data = request.get_json()
-        features = np.array(data["features"]).reshape(1, -1)
-        
-        # Scale the input features
-        scaled_features = scaler.transform(features)
+@app.route('/analyze-ctg', methods=['POST'])
+def analyze_ctg():
+    """Handles CTG PDF analysis."""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
 
-        # Make a prediction
-        prediction = model.predict(scaled_features)[0]
-        
-        # Map prediction to health status
-        health_status = {1: "Normal", 2: "Suspect", 3: "Pathological"}
-        result = {"prediction": int(prediction), "status": health_status.get(int(prediction), "Unknown")}
-        
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)})
+    file = request.files['file']
+    pdf_bytes = file.read()
+    extracted_text = extract_text_from_pdf(pdf_bytes)
+
+    # Send extracted text to Ollama DeepSeek R1
+    response = ollama.chat(model="deepseek-r1", messages=[
+        {"role": "user", "content": f"Analyze this CTG report and provide insights: {extracted_text}"}
+    ])
+
+    return jsonify({"analysis": response['message']['content']})
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

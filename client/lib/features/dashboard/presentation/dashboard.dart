@@ -4,6 +4,7 @@ import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:prenova/features/MedicalDocuments/medical_documents.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/Profilepage.dart';
+import 'package:prenova/features/ctg/fetal_health.dart';
 import 'package:prenova/features/fetal_health/presentation/fetal_health.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
 // import 'package:prenova/features/fetal_health/presentation/fetal_health.dart';
@@ -28,6 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final userEmail = authservice.getCurrentUserEmail() ?? "No email found";
     String username = userEmail.split('@')[0];
+    
 
     final List<Map<String, dynamic>> dashboardItems = [
       {
@@ -54,14 +56,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               context, MaterialPageRoute(builder: (context) => KickTrackerScreen()));
         }
       },
-      // {
-      //   'title': 'Contraction Timer',
-      //   'icon': LucideIcons.timer,
-      //   'onPressed': () {
-      //     Navigator.push(
-      //         context, MaterialPageRoute(builder: (context) => ContractionTimerScreen()));
-      //   }
-      // },
+      {
+        'title': 'Contraction Timer',
+        'icon': LucideIcons.timer,
+        'onPressed': () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => PDFUploadScreen()));
+        }
+      },
     ];
 
     final List<Widget> bottomNavScreens = [
@@ -99,16 +101,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold,color: AppPallete.textColor)),
             SizedBox(height: 8),
             Text("What would you like to do today?",
-                style: TextStyle(fontSize: 25, color: AppPallete.gradient1)),
+                style: TextStyle(fontSize: 15, color: AppPallete.gradient1)),
             SizedBox(height: 30),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("Week 19 - 3rd Trimester",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,color: AppPallete.textColor)),
-                TextButton(onPressed: (){}, child: Text('View Progress',style: TextStyle(fontSize: 20,),)),
-              ],
-            ),
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Expanded(
+      child: Text(
+        "Week 19 - 3rd Trimester",
+        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: AppPallete.textColor),
+        overflow: TextOverflow.ellipsis, // Prevents text overflow
+      ),
+    ),
+    TextButton(
+      onPressed: () {},
+      child: Text(
+        'View Progress',
+        style: TextStyle(fontSize: 15),
+      ),
+    ),
+  ],
+),
             SizedBox(height: 8),
             SizedBox(height: 80),
             Expanded(

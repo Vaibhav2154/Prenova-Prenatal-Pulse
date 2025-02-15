@@ -191,7 +191,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           backgroundColor: AppPallete.textColor,
           gridData: const FlGridData(show: true),
           borderData: FlBorderData(show: false),
-          backgroundColor: AppPallete.textColor,
+         // backgroundColor: AppPallete.textColor,
           lineBarsData: [
             LineChartBarData(
               spots: _currentData.isEmpty ? [FlSpot(0, 0)] : _currentData, // Ensure chart is not empty

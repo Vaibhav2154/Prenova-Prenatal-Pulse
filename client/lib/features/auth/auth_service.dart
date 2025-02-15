@@ -72,6 +72,7 @@ class AuthService {
     final session = supabase.auth.currentSession;
     return session?.user.email;
   }
+  
 
   // Listen to auth state changes
   Stream<AuthState> get authStateChanges => supabase.auth.onAuthStateChange;
