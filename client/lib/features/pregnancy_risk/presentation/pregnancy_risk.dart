@@ -31,7 +31,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
     _previousSubmissions = _fetchPreviousSubmissions();
   }
 
-  Future<void> _predictAndSave() async {
+Future<void> _predictAndSave() async {
     setState(() {
       _isLoading = true;
       _prediction = "";
@@ -58,35 +58,34 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
         final Map<String, dynamic> data = jsonDecode(response.body);
         if (data.containsKey('prediction')) {
           String result = data['prediction'];
+          int numericResult = data['prediction_numeric'];
 
           await supabase.from('vitals').insert({
-            "age": double.tryParse(ageController.text) ?? 0.0,
             "systolic_bp": double.tryParse(systolicBPController.text) ?? 0.0,
             "diastolic_bp": double.tryParse(diastolicBPController.text) ?? 0.0,
             "blood_glucose": double.tryParse(bloodGlucoseController.text) ?? 0.0,
             "body_temp": double.tryParse(bodyTempController.text) ?? 0.0,
             "heart_rate": double.tryParse(heartRateController.text) ?? 0.0,
-            "prediction": result,
+            "prediction": numericResult,
             "created_at": DateTime.now().toIso8601String(),
           });
 
           setState(() {
             _prediction = "Predicted Risk Level: $result";
-            _previousSubmissions = _fetchPreviousSubmissions(); // Refresh table
-          });
-        } else {
-          setState(() {
-            _prediction = "Error: Unexpected response format";
+            _previousSubmissions = _fetchPreviousSubmissions();
           });
         }
       } else {
         setState(() {
-          _prediction = "Error: ${response.statusCode} - ${response.body}";
+          _prediction = "Error: ${response.statusCode}";
         });
       }
     } catch (e) {
       setState(() {
-        _prediction = "Error: Failed to connect to the server";
+        _prediction = "Please reload so that model analyzes";
+        setState(() {
+          
+        });
       });
     } finally {
       setState(() {
@@ -135,6 +134,12 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
   }
 
  Widget _buildTable(List<Map<String, dynamic>> vitals) {
+  Map<int, String> riskMapping = {
+    0: "Normal",
+    1: "Suspect",
+    2: "Pathological"
+  };
+
   return SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: DataTable(
@@ -156,7 +161,8 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
           DataCell(Text(vital['blood_glucose'].toString(), style: TextStyle(color: Colors.black))),
           DataCell(Text(vital['body_temp'].toString(), style: TextStyle(color: Colors.black))),
           DataCell(Text(vital['heart_rate'].toString(), style: TextStyle(color: Colors.black))),
-          DataCell(Text(vital['prediction'].toString(), style: TextStyle(color: Colors.black))),
+          DataCell(Text(riskMapping[vital['prediction']] ?? vital['prediction'].toString(), 
+            style: TextStyle(color: Colors.black))),
         ]);
       }).toList(),
     ),
@@ -199,10 +205,11 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
               textAlign: TextAlign.center,
             ),
 
-            Text(_prediction, style: TextStyle(color: Colors.white)),
+            //Text(_prediction, style: TextStyle(color: AppPallete.textColor)),
 
             SizedBox(height: 30),
-            Text('Previous Submissions', style: TextStyle(color: Colors.white, fontSize: 20)),
+            Text('Previous Submissions', style: TextStyle(color: AppPallete.textColor, fontSize: 20)),
+            SizedBox(height: 8,),
             FutureBuilder<List<Map<String, dynamic>>>(
               future: _previousSubmissions,
               builder: (context, snapshot) {

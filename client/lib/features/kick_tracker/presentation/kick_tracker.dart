@@ -154,6 +154,10 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Baby Kick Tracker'),
+        backgroundColor: AppPallete.gradient1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
       ),
       body: Column(
         children: [

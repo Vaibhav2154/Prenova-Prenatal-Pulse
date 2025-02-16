@@ -71,11 +71,10 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
           labelText: label,
           labelStyle: TextStyle(color: Colors.white70),
           filled: true,
-          fillColor: AppPallete.borderColor,
           prefixIcon: Icon(Icons.fastfood, color: AppPallete.gradient1),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color: AppPallete.borderColor!, width: 1.2),
+            borderSide: BorderSide(color:AppPallete.backgroundColor, width: 1.2),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
@@ -97,7 +96,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: trimester,
-          dropdownColor: AppPallete.borderColor,
+          dropdownColor: AppPallete.backgroundColor,
           icon: Icon(Icons.arrow_drop_down, color: AppPallete.gradient1),
           style: TextStyle(color: Colors.black, fontSize: 16),
           isExpanded: true,

@@ -200,7 +200,10 @@ class _ContractionTrackerScreenState extends State<ContractionTrackerScreen>
       appBar: AppBar(
         title: const Text('Contraction Timer',
             style: TextStyle(color: AppPallete.whiteColor)),
-        backgroundColor: AppPallete.primaryFgColor,
+        backgroundColor: AppPallete.gradient1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -346,8 +349,8 @@ class _ContractionTrackerScreenState extends State<ContractionTrackerScreen>
               backgroundColor: _isButtonDisabled
                   ? AppPallete.greyColor
                   : (_isActive
-                      ? AppPallete.gradient1
-                      : AppPallete.primaryFgColor),
+                      ? AppPallete.gradient3
+                      : AppPallete.gradient1),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),

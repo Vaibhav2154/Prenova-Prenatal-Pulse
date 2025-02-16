@@ -9,13 +9,20 @@ class PostFetalHealthScreen extends StatefulWidget {
 }
 
 class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
-  final TextEditingController baselineValueController = TextEditingController();
-  final TextEditingController accelerationsController = TextEditingController();
-  final TextEditingController fetalMovementController = TextEditingController();
   final AuthService _authService = AuthService();
+  final List<TextEditingController> controllers =
+      List.generate(15, (index) => TextEditingController());
 
   String _responseMessage = "";
   bool _isLoading = false;
+
+  final List<String> featureNames = [
+    'baseline_value', 'accelerations', 'fetal_movement', 'uterine_contractions',
+    'light_decelerations', 'severe_decelerations', 'prolonged_decelerations',
+    'abnormal_short_term_variability', 'mean_value_of_short_term_variability',
+    'percentage_of_time_with_abnormal_long_term_variability', 'mean_value_of_long_term_variability',
+    'histogram_width', 'histogram_min', 'histogram_max', 'histogram_number_of_peaks'
+  ];
 
   Future<void> _postFetalHealthData() async {
     setState(() {
@@ -28,21 +35,31 @@ class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
     try {
       final session = _authService.currentSession;
       final token = session?.accessToken;
+      if (token == null) {
+        setState(() {
+          _responseMessage = "Error: Authentication token is missing.";
+        });
+        return;
+      }
+
+      final Map<String, dynamic> requestData = {
+        "features": controllers.map((controller) => double.tryParse(controller.text) ?? 0.0).toList()
+      };
+
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json','Authorization':'Bearer $token'},
-        body: jsonEncode({
-          "baseline value": double.tryParse(baselineValueController.text) ?? 0.0,
-          "accelerations": double.tryParse(accelerationsController.text) ?? 0.0,
-          "fetal_movement": double.tryParse(fetalMovementController.text) ?? 0.0,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(requestData),
       );
 
       final responseData = jsonDecode(response.body);
 
       setState(() {
         if (response.statusCode == 200) {
-          _responseMessage = "Response: ${responseData['message']}";
+          _responseMessage = "Prediction: ${responseData['status']}";
         } else {
           _responseMessage = "Error: ${responseData['error'] ?? 'Unknown error occurred'}";
         }
@@ -82,9 +99,8 @@ class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildTextField('Baseline Value', baselineValueController),
-            _buildTextField('Accelerations', accelerationsController),
-            _buildTextField('Fetal Movement', fetalMovementController),
+            ...List.generate(featureNames.length,
+                (index) => _buildTextField(featureNames[index], controllers[index])),
             SizedBox(height: 20),
             _isLoading
                 ? CircularProgressIndicator()
@@ -107,5 +123,13 @@ class _PostFetalHealthScreenState extends State<PostFetalHealthScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 }

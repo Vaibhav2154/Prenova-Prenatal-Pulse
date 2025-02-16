@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/loginpage.dart';
 import 'package:prenova/features/auth/presentation/edit_profile_page.dart';
@@ -89,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF1E1E2A), Color(0xFF12121C)],
+                colors: [AppPallete.borderColor,AppPallete.backgroundColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),

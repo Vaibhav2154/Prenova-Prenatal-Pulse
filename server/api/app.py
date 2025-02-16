@@ -209,34 +209,51 @@ def predict_maternal():
 @app.route("/predict_fetal", methods=["POST"])
 def predict_fetal():
     try:
+        # Validate Authorization Header
         auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
-            return {'error': 'No valid token provided'}, 401
-        
+            return jsonify({'error': 'No valid token provided'}), 401
+
         token = auth_header.split(' ')[1]
-
-
-
-        user_data = supabase.auth.get_user(token)
-
-        if not user_data:
-            return {'error': 'Invalid token'}, 401
         
+        # Validate Token & Get User Data
+        try:
+            user_data = supabase.auth.get_user(token)
+            if not user_data or not user_data.user:
+                return jsonify({'error': 'Invalid token'}), 401
+        except Exception:
+            return jsonify({'error': 'Failed to validate token'}), 401
 
+        # Parse Input Data
         data = request.get_json()
-        features = np.array(data["features"]).reshape(1, -1)
-        
-        # Scale the input features
-        scaled_features = scaler.transform(features)
+        if not data or "features" not in data:
+            return jsonify({'error': 'Missing required feature data'}), 400
 
-        # Make a prediction
-        prediction = model.predict(scaled_features)[0]
+        # Ensure feature list has correct length
+        features = np.array(data["features"], dtype=float)
+        expected_feature_length = 15  # Adjust as needed
+        if features.shape[0] != expected_feature_length:
+            return jsonify({'error': f'Invalid feature length, expected {expected_feature_length}'}), 400
         
+        features = features.reshape(1, -1)
+
+        # Scale features
+        try:
+            scaled_features = scaler.transform(features)
+        except Exception as e:
+            return jsonify({'error': f'Feature scaling failed: {str(e)}'}), 500
+
+        # Make Prediction
+        try:
+            prediction = int(model.predict(scaled_features)[0])  # Ensure Python int
+        except Exception as e:
+            return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
+
         # Map prediction to health status
         health_status = {1: "Normal", 2: "Suspect", 3: "Pathological"}
+        prediction_result = health_status.get(prediction, "Unknown")
 
-        # Insert into ctg table
-        # Map features array to CTG parameters in order
+        # Define Feature Names
         feature_names = [
             'baseline_value', 'accelerations', 'fetal_movement', 'uterine_contractions',
             'light_decelerations', 'severe_decelerations', 'prolonged_decelerations',
@@ -244,22 +261,28 @@ def predict_fetal():
             'percentage_of_time_with_abnormal_long_term_variability', 'mean_value_of_long_term_variability',
             'histogram_width', 'histogram_min', 'histogram_max', 'histogram_number_of_peaks'
         ]
-        
-        # Create dictionary by zipping feature names with values
-        feature_dict = dict(zip(feature_names, features.flatten()))
-        
+
+        # Map features to dictionary and ensure all values are Python types
+        feature_dict = {k: float(v) for k, v in zip(feature_names, features.flatten())}
+
+        # Prepare data for Supabase
         ctg_data = {
             'UID': user_data.user.id,
-            **feature_dict,  # Unpack the feature dictionary
-            'prediction': int(prediction)
+            **feature_dict,
+            'prediction': prediction
         }
-        result_ctg = supabase.table('ctg').insert(ctg_data).execute()
 
-        result = {"prediction": int(prediction), "status": health_status.get(int(prediction), "Unknown")}
-        
-        return jsonify(result)
+        # Insert Data into Supabase
+        try:
+            supabase.table('ctg').insert(ctg_data).execute()
+        except Exception as e:
+            return jsonify({'error': f'Database insert failed: {str(e)}'}), 500
+
+        return jsonify({"prediction": prediction, "status": prediction_result})
+
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
 
 
 @app.route("/diet_plan", methods=["POST"])
@@ -358,6 +381,10 @@ def chatbot():
         return jsonify({"response": response.message.content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/')
+def ind():
+    return "Hello governer"
 
 if __name__ == "__main__":
     app.run(debug=True,port=5003,host="0.0.0.0")
