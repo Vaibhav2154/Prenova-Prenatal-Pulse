@@ -120,8 +120,6 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
         title: Text("Pregnancy Diet Plan", style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: AppPallete.gradient1,
-        elevation: 5,
-        shadowColor: AppPallete.gradient1.withOpacity(0.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),

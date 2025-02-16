@@ -114,12 +114,12 @@ Future<void> _predictAndSave() async {
       child: TextField(
         controller: controller,
         keyboardType: TextInputType.number,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: AppPallete.textColor,),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.white70),
+          labelStyle: TextStyle(color: AppPallete.textColor),
           filled: true,
-          fillColor: Colors.grey[900],
+          fillColor: AppPallete.backgroundColor,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide(color: Colors.grey[700]!, width: 1.2),
@@ -195,7 +195,10 @@ Future<void> _predictAndSave() async {
                 ? CircularProgressIndicator(color: Colors.pinkAccent)
                 : ElevatedButton(
                     onPressed: _predictAndSave,
-                    child: Text('Predict & Save'),
+                    child: Text('Predict & Save',style: TextStyle(color: AppPallete.backgroundColor),),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppPallete.gradient1,
+                    )
                   ),
 
             SizedBox(height: 20),

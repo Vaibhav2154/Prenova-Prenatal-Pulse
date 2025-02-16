@@ -29,31 +29,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final userEmail = authservice.getCurrentUserEmail() ?? "No email found";
     String username = userEmail.split('@')[0];
-    
 
     final List<Map<String, dynamic>> dashboardItems = [
       {
         'title': 'Fetal Health Monitoring',
         'icon': LucideIcons.baby,
         'onPressed': () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => PostFetalHealthScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => PostFetalHealthScreen()));
         }
       },
       {
         'title': 'Vitals Monitoring',
         'icon': LucideIcons.heartPulse,
         'onPressed': () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => PregnancyRiskScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => PregnancyRiskScreen()));
         }
       },
       {
         'title': 'Kick Tracker',
         'icon': LucideIcons.footprints,
         'onPressed': () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => KickTrackerScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => KickTrackerScreen()));
         }
       },
       {
@@ -61,7 +60,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'icon': LucideIcons.timer,
         'onPressed': () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) =>  ContractionTrackerScreen()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ContractionTrackerScreen()));
         }
       },
     ];
@@ -75,7 +76,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+        title: Text('Dashboard',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
         centerTitle: true,
         backgroundColor: AppPallete.gradient1,
         shape: RoundedRectangleBorder(
@@ -85,7 +87,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           IconButton(
             icon: Icon(Icons.account_circle, size: 42),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()));
             },
           ),
         ],
@@ -96,10 +99,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text("Hello, $username 👋",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: AppPallete.textColor)),
+                style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: AppPallete.textColor)),
             SizedBox(height: 8),
             Text("What would you like to do today?",
-                style: TextStyle(fontSize: 15, color: AppPallete.gradient1)),
+                style: TextStyle(fontSize: 20, color: AppPallete.textColor)),
             SizedBox(height: 30),
             SizedBox(height: 80),
             Expanded(
@@ -132,12 +138,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(dashboardItems[index]['icon'], size: 40, color: AppPallete.gradient3),
+                          Icon(dashboardItems[index]['icon'],
+                              size: 40, color: AppPallete.gradient3),
                           SizedBox(height: 10),
                           Text(
                             dashboardItems[index]['title'],
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -145,6 +153,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                 },
               ),
+            ),
+            SizedBox(
+              height: 5,
             ),
           ],
         ),
