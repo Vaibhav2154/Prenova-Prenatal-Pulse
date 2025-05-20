@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:prenova/core/constants/api_contants.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -27,16 +30,16 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
   Future<void> fetchChatHistory() async {
     final session = _authService.currentSession;
     final token = session?.accessToken;
-    final response = await http.get(Uri.parse("http://localhost:5003/chat"),headers: {"Authorization": "Bearer $token"});
+    final response = await http.get(Uri.parse("${ApiContants.baseUrl}/chat"),headers: {"Authorization": "Bearer $token"});
     if (response.statusCode == 200) {
       final List<dynamic> history = jsonDecode(response.body);
       setState(() {
         messages = history
-            .map((e) => {
-                  "role": e["role"],
-                  "content": e["content"].replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), ''),
-                })
-            .toList();
+        .map((e) => {
+          "role": e["role"],
+          "content": e["content"].replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), ''),
+            })
+        .toList();
       });
     }
   }
@@ -52,23 +55,24 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen> {
     });
 
     final response = await http.post(
-      Uri.parse("http://localhost:5003/chat"),
+      Uri.parse("${ApiContants.baseUrl}/chat"),
       headers: {"Content-Type": "application/json",'Authorization':'Bearer $token'},
       body: jsonEncode({"message": userMessage.replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), '')}),
     );
+    log(response.toString());
     fetchChatHistory();
-    // if (response.statusCode == 200) {
-    //   final responseData = jsonDecode(response.body);
-    //   String botResponse = responseData['content'];
-    //   print(response.body);
-    //   setState(() {
-    //     messages.add({"role": "bot", "content": botResponse.replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), '')});
-    //   });
-    // } else {
-    //   setState(() {
-    //     messages.add({"role": "bot", "content": "Error: unable to fetch response."});
-    //   });
-    // }
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      String botResponse = responseData['content'];
+      print(response.body);
+      setState(() {
+        messages.add({"role": "bot", "content": botResponse.replaceAll(RegExp(r'<think>.*?</think>', dotAll: true), '')});
+      });
+    } else {
+      setState(() {
+        messages.add({"role": "bot", "content": "Error: unable to fetch response."});
+      });
+    }
   }
 
   @override

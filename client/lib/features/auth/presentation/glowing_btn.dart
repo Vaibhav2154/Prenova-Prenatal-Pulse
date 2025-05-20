@@ -40,7 +40,7 @@ class _GlowingButtonState extends State<GlowingButton> with SingleTickerProvider
               widget.text,
               style: GoogleFonts.poppins(
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 color: Colors.white,
               ),
             ),

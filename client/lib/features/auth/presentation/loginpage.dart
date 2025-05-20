@@ -101,11 +101,12 @@ class _LoginPageState extends State<LoginPage> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: "Email",
+                      
                       hoverColor: AppPallete.errorColor,
                       prefixIcon: Icon(Icons.email, color: Colors.grey),
                       focusColor: AppPallete.borderColor,
                     ),
-                    style: TextStyle(color: AppPallete.textColor),
+                    style: TextStyle(color: Colors.black),
                   ),
                   const SizedBox(height: 15),
                   TextField(
@@ -128,34 +129,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
                   // White Google Sign-In Button with Icon
-                  ElevatedButton(
-                    onPressed: _signInWithGoogle,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // White background
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        
-                        const SizedBox(width: 10),
-                        const Text(
-                          "Sign in with Google",
-                          style: TextStyle(
-                            color: Colors.black87, // Black text
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                  SizedBox(
+                    width: 200,
+                    height: 60,
+                    child: GlowingButton(
+                      text: "Google sign in",
+                      onPressed: _signInWithGoogle,
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  
                   const SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {

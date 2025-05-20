@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prenova/core/theme/app_theme.dart';
-import 'package:prenova/features/auth/presentation/Registerpage.dart';
-import 'package:prenova/features/auth/presentation/loginpage.dart';
-import 'package:prenova/features/auth/presentation/welcome_pg.dart';
+// import 'package:prenova/features/auth/presentation/Registerpage.dart';
+// import 'package:prenova/features/auth/presentation/loginpage.dart';
+// import 'package:prenova/features/auth/presentation/welcome_pg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:prenova/features/auth/auth_gate.dart';
 

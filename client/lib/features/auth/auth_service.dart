@@ -74,6 +74,8 @@ class AuthService {
     final session = supabase.auth.currentSession;
     return session?.user.email;
   }
+
+
   
 
   // Listen to auth state changes
@@ -91,4 +93,30 @@ class AuthService {
       throw Exception('Google Sign-in error: $e');
     }
   }
+String? getCurrentUsername() {
+  final user = supabase.auth.currentUser;
+  if (user == null) return null;
+  
+  // Try to get the username from user metadata
+  final metadata = user.userMetadata;
+  if (metadata != null) {
+    // First try name from metadata
+    if (metadata['name'] != null) {
+      return metadata['name'] as String;
+    }
+    // Then try preferred_username
+    if (metadata['preferred_username'] != null) {
+      return metadata['preferred_username'] as String;
+    }
+    // Finally try full_name
+    if (metadata['full_name'] != null) {
+      return metadata['full_name'] as String;
+    }
+  }
+  
+  // Fall back to email if no username is found
+  return user.email?.split('@').first;
 }
+}
+
+// Get current username

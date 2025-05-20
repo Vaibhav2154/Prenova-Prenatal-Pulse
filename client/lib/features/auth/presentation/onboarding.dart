@@ -20,7 +20,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController trimesterController = TextEditingController();
   final TextEditingController dueDateController = TextEditingController();
-  
+
   bool isLoading = false;
 
   @override
@@ -98,30 +98,58 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   // Show date picker for due date selection
   Future<void> _selectDueDate(BuildContext context) async {
-  final DateTime initialDate = DateTime.now(); // Set the initial date to today
-  final DateTime firstDate = DateTime(initialDate.year, initialDate.month - 10, initialDate.day); // 10 months before initial date
-  final DateTime lastDate = DateTime(initialDate.year, initialDate.month + 10, initialDate.day); // 10 months after initial date
+    final DateTime initialDate = DateTime.now();
+    final DateTime firstDate = DateTime(
+      initialDate.year,
+      initialDate.month - 10,
+      initialDate.day,
+    );
+    final DateTime lastDate = DateTime(
+      initialDate.year,
+      initialDate.month + 10,
+      initialDate.day,
+    );
 
-  DateTime? pickedDate = await showDatePicker(
-    context: context,
-    initialDate: initialDate, // Set the initial date to today
-    firstDate: firstDate, // 10 months before today
-    lastDate: lastDate, // 10 months after today
-  );
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppPallete.gradient1,
+              onPrimary: Colors.white,
+              onSurface: AppPallete.textColor,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppPallete.gradient1,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
 
-  if (pickedDate != null) {
-    setState(() {
-      dueDateController.text = pickedDate.toLocal().toString().split(' ')[0]; // Save only YYYY-MM-DD
-    });
+    if (pickedDate != null) {
+      setState(() {
+        dueDateController.text = pickedDate.toLocal().toString().split(' ')[0];
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppPallete.backgroundColor,
       appBar: AppBar(
-        title: const Text("Onboarding"),
+        title: const Text(
+          "Onboarding",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: AppPallete.gradient1,
       ),
       body: SingleChildScrollView(
@@ -133,17 +161,21 @@ class _OnboardingPageState extends State<OnboardingPage> {
             _buildTextField("Height (cm)", heightController, isNumber: true),
             _buildTextField("Weight (kg)", weightController, isNumber: true),
             _buildTextField("Age", ageController, isNumber: true),
-            _buildTextField("Pregnancy Trimester", trimesterController, isNumber: true),
-            
+            _buildTextField("Pregnancy Trimester", trimesterController,
+                isNumber: true),
+
             // Due Date Picker Field
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: TextField(
+                style: TextStyle(color: AppPallete.textColor),
                 controller: dueDateController,
                 readOnly: true,
                 decoration: InputDecoration(
                   labelText: "Expected Due Date",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  labelStyle: TextStyle(color: Colors.black),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   fillColor: Colors.white,
                   filled: true,
                   suffixIcon: IconButton(
@@ -169,7 +201,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
                         "Save & Continue",
-                        style: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+                        style:
+                            GoogleFonts.lato(fontSize: 18, color: Colors.white),
                       ),
               ),
             ),
@@ -189,10 +222,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
+
+          labelStyle: TextStyle(color: Colors.black),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-          fillColor: Colors.white,
-          filled: true,
+          // fillColor: Colors,
+          // filled: true,
         ),
+        style: TextStyle(color: AppPallete.textColor),
       ),
     );
   }

@@ -6,6 +6,9 @@ import 'package:mime/mime.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
 class MedicalDocumentsPage extends StatefulWidget {
   @override
@@ -36,7 +39,8 @@ class _MedicalDocumentsPageState extends State<MedicalDocumentsPage> {
       Uint8List fileBytes = await file.readAsBytes();
       final String fileName =
           "${DateTime.now().millisecondsSinceEpoch}.${file.path.split('.').last}";
-      final String? mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
+      final String? mimeType =
+          lookupMimeType(file.path) ?? 'application/octet-stream';
 
       setState(() => isLoading = true);
 
@@ -45,12 +49,15 @@ class _MedicalDocumentsPageState extends State<MedicalDocumentsPage> {
         throw Exception("User not authenticated. Please log in.");
       }
 
-      await supabase.storage
-          .from('medical_docs')
-          .uploadBinary(fileName, fileBytes, fileOptions: FileOptions(contentType: mimeType));
+      await supabase.storage.from('medical_docs').uploadBinary(
+          fileName, fileBytes,
+          fileOptions: FileOptions(contentType: mimeType));
 
       /// ✅ Corrected URL fetching
-      final String fileUrl = supabase.storage.from('medical_docs').getPublicUrl(fileName).split('?')[0];
+      final String fileUrl = supabase.storage
+          .from('medical_docs')
+          .getPublicUrl(fileName)
+          .split('?')[0];
 
       setState(() {
         uploadedFiles.add(fileUrl);
@@ -74,7 +81,8 @@ class _MedicalDocumentsPageState extends State<MedicalDocumentsPage> {
     try {
       setState(() => isLoading = true);
 
-      final List<FileObject> files = await supabase.storage.from('medical_docs').list();
+      final List<FileObject> files =
+          await supabase.storage.from('medical_docs').list();
 
       if (files.isEmpty) {
         debugPrint("No files found in storage.");
@@ -82,8 +90,21 @@ class _MedicalDocumentsPageState extends State<MedicalDocumentsPage> {
         return;
       }
 
-      List<String> fileUrls = files.map((file) {
-        return supabase.storage.from('medical_docs').getPublicUrl(file.name).split('?')[0];
+      // Filter out any special files like .emptyFolderPlaceholder
+      final validFiles =
+          files.where((file) => !file.name.startsWith('.')).toList();
+
+      if (validFiles.isEmpty) {
+        debugPrint("No valid files found in storage.");
+        setState(() => isLoading = false);
+        return;
+      }
+
+      List<String> fileUrls = validFiles.map((file) {
+        return supabase.storage
+            .from('medical_docs')
+            .getPublicUrl(file.name)
+            .split('?')[0];
       }).toList();
 
       setState(() {
@@ -96,21 +117,60 @@ class _MedicalDocumentsPageState extends State<MedicalDocumentsPage> {
     }
   }
 
-  /// Opens files in the browser
+  /// Opens files in the browser or in-app viewer
   void _openFile(String url, String extension) async {
     String cleanedUrl = url.trim();
     debugPrint("Opening File: $cleanedUrl");
 
     if (extension == 'pdf') {
-      if (await canLaunchUrl(Uri.parse(cleanedUrl))) {
-        await launchUrl(Uri.parse(cleanedUrl), mode: LaunchMode.externalApplication);
-      } else {
-        debugPrint("Could not open PDF: $cleanedUrl");
+      setState(() => isLoading = true);
+      try {
+        // Download the PDF file
+        final response = await http.get(Uri.parse(cleanedUrl));
+        final bytes = response.bodyBytes;
+
+        // Get temporary directory to store the PDF
+        final dir = await getTemporaryDirectory();
+        final file = File('${dir.path}/document.pdf');
+
+        // Write the PDF to a file
+        await file.writeAsBytes(bytes);
+
+        // Open the PDF in a new screen
+        setState(() => isLoading = false);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Scaffold(
+              appBar: AppBar(
+                title: Text("PDF Viewer"),
+                backgroundColor: Colors.pinkAccent,
+              ),
+              body: PDFView(
+                filePath: file.path,
+                enableSwipe: true,
+                swipeHorizontal: true,
+                autoSpacing: false,
+                pageFling: false,
+                onError: (error) {
+                  debugPrint("PDF Error: $error");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error loading PDF")),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      } catch (e) {
+        setState(() => isLoading = false);
+        debugPrint("PDF loading error: $e");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Could not open PDF")),
+          SnackBar(content: Text("Failed to load PDF: $e")),
         );
       }
     } else {
+      // Keep the existing image viewing logic
       showDialog(
         context: context,
         builder: (context) => Dialog(
@@ -196,8 +256,7 @@ class _MedicalDocumentsPageState extends State<MedicalDocumentsPage> {
                                               CircularProgressIndicator(),
                                           errorWidget: (context, url, error) =>
                                               Icon(Icons.image,
-                                                  color: Colors.grey,
-                                                  size: 50),
+                                                  color: Colors.grey, size: 50),
                                         ),
                                       ),
                                 title: Text("Document ${index + 1}",

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:prenova/core/constants/api_contants.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 
@@ -30,7 +32,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
       final token = session?.accessToken;
 
       final response = await http.post(
-        Uri.parse("http://localhost:5003/diet_plan"),
+        Uri.parse("${ApiContants.baseUrl}/diet_plan"),
         headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $token'},
         body: jsonEncode({
           "trimester": trimester,
@@ -39,7 +41,7 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
           "dietary_preference": dietController.text.trim(),
         }),
       );
-
+      log(response.body);
       if (response.statusCode == 200) {
         setState(() {
           dietPlan = jsonDecode(response.body)["diet_plan"] ?? "No diet plan received.";
@@ -66,15 +68,11 @@ class _PregnancyDietScreenState extends State<PregnancyDietScreen> {
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: TextField(
         controller: controller,
-        style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: Colors.white70),
-          filled: true,
           prefixIcon: Icon(Icons.fastfood, color: AppPallete.gradient1),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: BorderSide(color:AppPallete.backgroundColor, width: 1.2),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),

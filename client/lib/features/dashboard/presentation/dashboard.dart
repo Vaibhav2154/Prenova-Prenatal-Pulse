@@ -15,6 +15,7 @@ import 'package:prenova/features/pregnancy_diet_screen/pregnancy_diet_screen.dar
 import 'package:prenova/features/auth/presentation/Profilepage.dart';
 import 'package:prenova/features/doctor_cons/presentation/doctor_consultation.dart';
 import 'package:prenova/features/dashboard/presentation/contraction_timer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -22,14 +23,35 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final authService = AuthService();
+  final SupabaseClient supabase = Supabase.instance.client;
+
+  String userName = "Mom to be.....";
+
+  Future<void> _fetchUserName() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    final response = await supabase
+        .from('profiles')
+        .select('user_name')
+        .eq('UID', user.id)
+        .maybeSingle();
+
+    if (response != null) {
+      setState(() {
+        userName = response['user_name'] ?? "Unknown";
+      });
+    }
+  }
+
   int _currentIndex = 0;
-  final authservice = AuthService();
 
   @override
   Widget build(BuildContext context) {
-    final userEmail = authservice.getCurrentUserEmail() ?? "No email found";
-    String username = userEmail.split('@')[0];
-
+    setState(() {
+      _fetchUserName();
+    });
     final List<Map<String, dynamic>> dashboardItems = [
       {
         'title': 'Fetal Health Monitoring',
@@ -98,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Hello, $username 👋",
+            Text( "Hello, $userName 👋",
                 style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,

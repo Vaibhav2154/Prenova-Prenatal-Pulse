@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prenova/core/constants/api_contants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:prenova/core/theme/app_pallete.dart';
@@ -37,7 +38,7 @@ Future<void> _predictAndSave() async {
       _prediction = "";
     });
 
-    final url = Uri.parse('http://localhost:5003/predict_maternal');
+    final url = Uri.parse('${ApiContants.baseUrl}/predict_maternal');
     try {
       final session = _authService.currentSession;
       final token = session?.accessToken;
@@ -53,7 +54,7 @@ Future<void> _predictAndSave() async {
           "heart_rate": double.tryParse(heartRateController.text) ?? 0.0,
         }),
       );
-
+      
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         if (data.containsKey('prediction')) {
@@ -95,8 +96,15 @@ Future<void> _predictAndSave() async {
   }
 
   Future<List<Map<String, dynamic>>> _fetchPreviousSubmissions() async {
+    final userId = _authService.currentUser?.id;
+    if (userId == null) {
+      return [];
+    }
+    
     final response = await supabase
         .from('vitals')
+        .select("*")
+        .eq('UID', userId)
         .select("*")
         .order('created_at', ascending: false);
 
