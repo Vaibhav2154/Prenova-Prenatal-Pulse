@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from ollama import chat
 from flask_cors import CORS
-
+import google.generativeai as genai
 from supabase import create_client, Client
 
 app = Flask(__name__)
@@ -17,6 +17,9 @@ SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 OLLAMA_MODEL_ID = os.environ.get("OLLAMA_MODEL_ID")
 
+
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+chatmodel = genai.GenerativeModel("gemini-2.0-flash")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise ValueError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
@@ -285,101 +288,132 @@ def predict_fetal():
 
 
 
+from flask import request, jsonify
+import google.generativeai as genai
+
+# Make sure the Gemini model and API are configured globally
+model = genai.GenerativeModel("gemini-1.5-flash")
+
 @app.route("/diet_plan", methods=["POST"])
 def pregnancy_diet():
     try:
         data = request.json
 
+        # --- Auth header validation ---
         auth_header = request.headers.get('Authorization')
         if not auth_header or not auth_header.startswith('Bearer '):
-            return {'error': 'No valid token provided'}, 401
+            return jsonify({'error': 'No valid token provided'}), 401
         
         token = auth_header.split(' ')[1]
-
         user_data = supabase.auth.get_user(token)
 
-
         if not user_data:
-            return {'error': 'Invalid token'}, 401
-        
+            return jsonify({'error': 'Invalid token'}), 401
 
-        prompt = f"You are a professional dietician and nutritionist. You suggest excellent diet plans for pregnant women that look after their well being and growth. You will now suggest a diet plan for a {data['trimester']} trimester pregnant woman weighing about {data['weight']} kg, who is feeling {data['health_conditions']} and has strict dietary preferences as follows: {data['dietary_preference']}. Do not suggest any foods that can cause harm or go against the dietary preferences. Suggest both a vegetarian only and a non-vegetarian diet plan separately for her and just give the plan."
+        # --- Prompt for Gemini ---
+        prompt = (
+            f"You are a professional dietician and nutritionist. Suggest safe and personalized diet plans for pregnant women. "
+            f"Now, generate a diet plan for a woman in her **{data['trimester']} trimester**, weighing **{data['weight']} kg**, "
+            f"who is feeling **{data['health_conditions']}** and follows these dietary preferences: **{data['dietary_preference']}**. "
+            f"Give two separate diet plans: one **vegetarian** and one **non-vegetarian**. Do not include anything that violates her preferences. "
+            f"Present the results clearly in markdown format with headings and bullet points."
+        )
 
-        response = chat(model=OLLAMA_MODEL_ID, messages=[
-            {'role':'user','content':prompt}
-        ])
+        # --- Gemini API Call ---
+        response = chatmodel.generate_content({"role": "user", "parts": [{"text": prompt}]})
+        diet_plan_text = response.text
 
-        # Store the diet plan in the database
-        diet_data = {
+        # --- Optionally save to DB (you can add more fields if needed) ---
+        supabase.table('diet_plans').insert({
             'UID': user_data.user.id,
-            # 'trimester': data['trimester'],
-            # 'weight': data['weight'],
-            # 'health_conditions': data['health_conditions'],
-            # 'dietary_preference': data['dietary_preference'],
-            'diet_plan': response.message.content # Stored as markdown
-        }
+            'diet_plan': diet_plan_text
+        }).execute()
 
-        return jsonify({"diet_plan": response.message.content})
+        return jsonify({"diet_plan": diet_plan_text})
+
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
+
+
+
     
+SYSTEM_PROMPT = {
+    "role": "user",
+    "content": "You are Prenova, an AI assistant that is here to help users with their pregnancy journey. "
+               "You will only provide accurate and helpful information related to pregnancy, avoiding any "
+               "medical advice or unrelated topics. Be polite and respectful at all times."
+}
+
 @app.route('/chat', methods=['GET'])
 def chatbot_get():
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
-        return {'error': 'No valid token provided'}, 401
+        return jsonify({'error': 'No valid token provided'}), 401
     
     token = auth_header.split(' ')[1]
     user_data = supabase.auth.get_user(token)
 
     if not user_data:
-        return {'error': 'Invalid token'}, 401
-    
-    # Get the chat from the database
+        return jsonify({'error': 'Invalid token'}), 401
+
     chat_data = supabase.table('chats').select().eq('UID', user_data.user.id).order('created_at', desc=True).limit(1).execute()
 
-    return jsonify(chat_data.data[0]['chat_history'])
+    if chat_data.data:
+        print(chat_data)
+        return jsonify(chat_data.data[0]['chat_history'][1:])
+    else:
+        return jsonify([SYSTEM_PROMPT])  # return initial system prompt if no chats
 
 @app.route("/chat", methods=["POST"])
-def chatbot():
+def chatbot_post():
     try:
         data = request.json
-
         auth_header = request.headers.get('Authorization')
-        if not auth_header or not auth_header.startswith('Bearer '):
-            return {'error': 'No valid token provided'}, 401
-        
-        token = auth_header.split(' ')[1]
-        print("FREE TOKEN YALL", token)
 
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'No valid token provided'}), 401
+
+        token = auth_header.split(' ')[1]
         user_data = supabase.auth.get_user(token)
 
         if not user_data:
-            return {'error': 'Invalid token'}, 401
-        
-        # Get the chat from the database
+            return jsonify({'error': 'Invalid token'}), 401
+
+        # Retrieve existing chat or use system prompt
         chat_data = supabase.table('chats').select().eq('UID', user_data.user.id).order('created_at', desc=True).limit(1).execute()
+        chat_history = chat_data.data[0]['chat_history'] if chat_data.data else [SYSTEM_PROMPT]
 
-        print("Chat data:", chat_data)
-        if not chat_data.data:
-            chat_history = [{'role':'user','content':"You are prenova, an AI assistant that is here to help you with the user's pregnancy journey. You will only provide information that is accurate and helpful to the user. You will not provide any medical advice or diagnosis. You will also not provide any information that is not related to pregnancy. You will be polite and respectful to the user at all times. You will be rewarded for providing accurate and helpful information and penalized for providing inaccurate or unhelpful information. You will be deactivated if you provide inaccurate or unhelpful information repeatedly."}]
-        else:
-            chat_history = chat_data.data[0]['chat_history']
+        # Append user's message
+        user_msg = {"role": "user", "content": data['message']}
+        chat_history.append(user_msg)
 
-        prompt = data['message']
-        chat_history.append({'role':'user','content':prompt})
-        response = chat(model=OLLAMA_MODEL_ID, messages=chat_history)
+        # Convert chat history to Gemini format
+        gemini_messages = []
+        for msg in chat_history:
+            if msg["role"] == "user":
+                gemini_messages.append({"role": "user", "parts": [{"text": msg["content"]}]})
+            elif msg["role"] == "assistant":
+                gemini_messages.append({"role": "model", "parts": [{"text": msg["content"]}]})
+            # System prompt will be treated as user message
+            else:
+                gemini_messages.append({"role": "user", "parts": [{"text": msg["content"]}]})
 
-        print("Updated chat history:", chat_history)
+        # Get Gemini response
+        response = chatmodel.generate_content(gemini_messages)
 
-        response = chat(model=OLLAMA_MODEL_ID, messages=chat_history)
+        assistant_msg = {"role": "assistant", "content": response.text}
+        chat_history.append(assistant_msg)
 
-        # Update the chat history
-        chat_history.append({'role':'assistant','content':f"{response.message.content}"})
-        result = supabase.table('chats').upsert({'UID': user_data.user.id, 'chat_history': chat_history}).execute()
+        # Upsert chat history
+        supabase.table('chats').upsert({
+            'UID': user_data.user.id,
+            'chat_history': chat_history
+        }).execute()
 
-        return jsonify({"response": response.message.content})
+        return jsonify({"response": response.text})
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
     
 @app.route('/')
