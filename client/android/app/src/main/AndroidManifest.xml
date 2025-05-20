@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <application
-        android:label="prenova"
+        android:label="Prenova"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

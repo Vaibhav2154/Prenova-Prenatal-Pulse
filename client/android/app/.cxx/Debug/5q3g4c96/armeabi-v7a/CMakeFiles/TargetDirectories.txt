@@ -1,0 +1,2 @@
+D:/Hackathons/Prenova-Prenatal-Pulse/client/android/app/.cxx/Debug/5q3g4c96/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Hackathons/Prenova-Prenatal-Pulse/client/android/app/.cxx/Debug/5q3g4c96/armeabi-v7a/CMakeFiles/rebuild_cache.dir
