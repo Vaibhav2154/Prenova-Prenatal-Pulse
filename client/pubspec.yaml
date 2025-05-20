@@ -40,7 +40,7 @@ dependencies:
   equatable: ^2.0.7
   google_fonts: ^6.2.1
   dialog_flowtter: ^0.2.0-nullsafety.0
-  http:
+  http: ^1.4.0
   image_picker:
   lucide_icons: ^0.257.0
   riverpod: ^2.6.1
@@ -57,11 +57,14 @@ dependencies:
     # Ensure this is up-to-date
   flutter_markdown:
   google_sign_in: ^6.2.2
+  flutter_pdfview: ^1.4.0+1
+  path_provider: ^2.1.5
+  syncfusion_flutter_pdfviewer: ^28.2.12
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.3.9
 
 flutter_native_splash:
