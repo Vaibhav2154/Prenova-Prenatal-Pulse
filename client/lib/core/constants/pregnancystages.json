@@ -1,0 +1,1056 @@
+{
+  "pregnancy_stages_weekly": [
+    {
+      "week": 1,
+      "title": "Week 1: The Starting Line - Your Last Period",
+      "image_path": "assets/pregnancystages/week1.jpg",
+      "description": "It might seem odd, but technically, you're not pregnant yet this week! Pregnancy is calculated from the first day of your last menstrual period (LMP). This helps doctors accurately track your due date. Right now, your body is simply shedding its uterine lining, preparing for a potential new cycle and a fresh opportunity for conception.",
+      "baby_size": "Not applicable - pre-conception",
+      "key_developments": [
+        "Menstruation (your period) begins.",
+        "Uterine lining is shed.",
+        "Body prepares for the next ovulation cycle."
+      ],
+      "mother_symptoms": [
+        "Typical menstrual period symptoms: cramping, bleeding, bloating, fatigue.",
+        "No pregnancy-related symptoms yet."
+      ],
+      "tips_for_parents": [
+        "Start taking a prenatal vitamin with **folic acid** to prevent neural tube defects.",
+        "Maintain a healthy diet and lifestyle, avoid alcohol and smoking.",
+        "Track your menstrual cycle to help predict ovulation."
+      ]
+    },
+    {
+      "week": 2,
+      "title": "Week 2: Ovulation Approaches - Preparing for Conception",
+      "image_path": "assets/pregnancystages/week2.jpg",
+      "description": "This week, your body is actively preparing for ovulation. One of your ovaries is maturing an egg, and the uterine lining is thickening in anticipation of a fertilized egg. Having unprotected intercourse around this time significantly increases your chances of conceiving.",
+      "baby_size": "Not applicable - pre-conception",
+      "key_developments": [
+        "An egg matures within a follicle in the ovary.",
+        "Uterine lining (endometrium) thickens in preparation for implantation.",
+        "Luteinizing Hormone (LH) surge triggers ovulation, typically at the end of this week."
+      ],
+      "mother_symptoms": [
+        "Increase in **cervical mucus** (often clear and stretchy, like egg whites).",
+        "Mild abdominal discomfort or pain on one side (**mittelschmerz**), indicating ovulation.",
+        "Increased libido (sex drive).",
+        "Slight increase in basal body temperature after ovulation."
+      ],
+      "tips_for_parents": [
+        "Continue prenatal vitamins and healthy habits.",
+        "Consider using ovulation predictor kits (OPKs) to pinpoint your most fertile window.",
+        "Engage in intercourse regularly, especially during your fertile window."
+      ]
+    },
+    {
+      "week": 3,
+      "title": "Week 3: The Miracle of Conception & Journey to the Uterus",
+      "image_path": "assets/pregnancystages/week3.jpg",
+      "description": "This is often the week **fertilization** occurs! A sperm successfully meets and penetrates your egg in the fallopian tube. The fertilized egg, now called a **zygote**, immediately begins a rapid journey of cell division as it travels down to your uterus. By the end of the week, it's a rapidly dividing ball of cells called a **blastocyst**.",
+      "baby_size": "Microscopic (zygote/blastocyst)",
+      "key_developments": [
+        "**Fertilization** takes place in the fallopian tube.",
+        "The **zygote** rapidly divides, becoming a **morula** and then a **blastocyst**.",
+        "The blastocyst begins its journey towards the uterus."
+      ],
+      "mother_symptoms": [
+        "Generally, no noticeable symptoms yet, as implantation hasn't occurred.",
+        "Some women report a heightened sense of smell, but this is rare at this early stage."
+      ],
+      "tips_for_parents": [
+        "Continue your healthy regimen.",
+        "It's too early for a pregnancy test, so try to be patient!",
+        "Start imagining your future as a parent."
+      ]
+    },
+    {
+      "week": 4,
+      "title": "Week 4: Implantation and Early Signals",
+      "image_path": "assets/pregnancystages/week4.jpg",
+      "description": "The **blastocyst** reaches your uterus and successfully implants itself into the rich lining. This is a critical step! Once implanted, your body starts producing **human chorionic gonadotropin (hCG)**, the hormone detected by pregnancy tests. This hormone also signals your ovaries to stop releasing eggs and to produce more progesterone, which is essential for maintaining the pregnancy.",
+      "baby_size": "Poppy seed (approx. 2mm)",
+      "key_developments": [
+        "**Implantation** of the blastocyst into the uterine wall.",
+        "Production of **hCG** begins, preventing your period.",
+        "The outer cells of the blastocyst form the early placenta, while the inner cells become the **embryo**.",
+        "The **neural tube** (precursor to brain and spinal cord) starts to form."
+      ],
+      "mother_symptoms": [
+        "**Missed period** is the most common sign.",
+        "Mild cramping, similar to menstrual cramps, but typically lighter.",
+        "Possible **light implantation spotting** (pink or brown), though not all women experience this.",
+        "**Breast tenderness** or sensitivity.",
+        "**Fatigue** due to rising hormone levels."
+      ],
+      "tips_for_parents": [
+        "You can take a home pregnancy test now! Early morning urine gives the most accurate results.",
+        "Schedule your first prenatal appointment once your pregnancy is confirmed.",
+        "Avoid any medications or substances not approved by your doctor."
+      ]
+    },
+    {
+      "week": 5,
+      "title": "Week 5: Embryo Takes Shape - Rapid Growth Begins",
+      "image_path": "assets/pregnancystages/week5.jpg",
+      "description": "Your baby is now officially an **embryo**, and growth is incredibly rapid. The **neural tube**, which will become the brain and spinal cord, is closing. A primitive **heart tube** is forming and will soon begin beating. Early blood vessels are also developing. Three distinct layers are forming, which will develop into all your baby's organs and tissues.",
+      "baby_size": "Orange seed (approx. 4mm)",
+      "key_developments": [
+        "**Neural tube** begins to close, forming the brain and spinal cord.",
+        "**Heart tube** starts to form and will soon begin rhythmic contractions (early heartbeat).",
+        "Three primary germ layers (ectoderm, mesoderm, endoderm) establish themselves, from which all organs develop.",
+        "Early blood vessels and circulatory system begin to emerge."
+      ],
+      "mother_symptoms": [
+        "**Morning sickness** (nausea, with or without vomiting) often begins or intensifies.",
+        "Increased need to **urinate frequently** due to hormonal changes and increased blood flow.",
+        "**Fatigue** continues as your body works hard to support the pregnancy.",
+        "More pronounced **breast tenderness** and swelling.",
+        "Heightened sense of smell and new food aversions."
+      ],
+      "tips_for_parents": [
+        "Continue taking your prenatal vitamins, especially folic acid.",
+        "Eat small, frequent meals to help manage morning sickness.",
+        "Stay hydrated to combat fatigue and frequent urination.",
+        "Consider discussing any concerns with your doctor at your first prenatal visit."
+      ]
+    },
+    {
+      "week": 6,
+      "title": "Week 6: The First Tiny Heartbeat",
+      "image_path": "assets/pregnancystages/week6.jpg",
+      "description": "This is a momentous week! Your baby's tiny **heart begins to beat**, often visible on an ultrasound. This rhythmic pump is crucial for circulating blood throughout the developing body. Small **limb buds** (precursors to arms and legs) are starting to appear, and tiny dimples for the eyes and ears are forming on the face.",
+      "baby_size": "Lentil (approx. 5-6mm)",
+      "key_developments": [
+        "**Heartbeat** begins and can often be detected on ultrasound.",
+        "Development of early **limb buds** (future arms and legs).",
+        "Formation of early facial features, including dimples for eyes and ears.",
+        "Brain development continues rapidly, with major regions beginning to form."
+      ],
+      "mother_symptoms": [
+        "**Nausea and vomiting** may become more severe for some.",
+        "Intensified **fatigue**.",
+        "More dramatic **mood swings** due to hormonal fluctuations.",
+        "Heightened sensitivity to smells and strong food aversions.",
+        "Bloating and feeling gassy."
+      ],
+      "tips_for_parents": [
+        "Focus on bland foods and ginger to alleviate morning sickness.",
+        "Prioritize rest and naps whenever possible.",
+        "Communicate with your partner about your feelings and symptoms.",
+        "Prepare questions for your first prenatal appointment, if you haven't had it yet."
+      ]
+    },
+    {
+      "week": 7,
+      "title": "Week 7: Rapid Brain Development & Growing Limbs",
+      "image_path": "assets/pregnancystages/week7.jpg",
+      "description": "Your baby's brain is undergoing incredible growth, dividing into three main sections that will eventually become the cerebrum, cerebellum, and brainstem. The limb buds are getting longer and flattening into paddle-like hands and feet, though fingers and toes aren't yet defined. The head is still disproportionately large.",
+      "baby_size": "Blueberry (approx. 10mm)",
+      "key_developments": [
+        "Major divisions of the **brain** begin to form.",
+        "Limb buds lengthen, and flattened hand and foot plates develop.",
+        "Basic structures of the eyes, ears, and nose become more defined.",
+        "The primitive kidney and digestive tract start to develop."
+      ],
+      "mother_symptoms": [
+        "**Persistent nausea and vomiting** are very common.",
+        "Extreme **tiredness** and a need for more sleep.",
+        "Increased production of **saliva**.",
+        "Cravings or aversions for certain foods.",
+        "More frequent urination."
+      ],
+      "tips_for_parents": [
+        "Continue to eat small, frequent meals to keep blood sugar stable.",
+        "Stay away from strong odors that trigger nausea.",
+        "Get plenty of rest and listen to your body's signals.",
+        "Consider asking your doctor about vitamin B6 for morning sickness relief."
+      ]
+    },
+    {
+      "week": 8,
+      "title": "Week 8: Tiny Details Emerge - Fingers and Toes",
+      "image_path": "assets/pregnancystages/week8.jpg",
+      "description": "Your baby is quickly developing more human-like features. Webbed fingers and toes are starting to emerge on the hand and foot plates, and cartilage is gradually turning into bone. The eyes, though still on the sides of the head, are becoming more distinct, and the ear canals are forming.",
+      "baby_size": "Raspberry / Kidney bean (approx. 1.3-1.6 cm)",
+      "key_developments": [
+        "**Fingers and toes** are present, though still webbed.",
+        "**Cartilage begins to harden into bone** in the limbs.",
+        "Eyes are more defined, and eyelids are forming.",
+        "Internal organs like the liver, kidneys, and lungs continue rapid development."
+      ],
+      "mother_symptoms": [
+        "**Morning sickness** may still be intense, but some might find it leveling off.",
+        "**Headaches** can be common due to hormonal shifts and increased blood volume.",
+        "**Heartburn** may start to appear.",
+        "Breasts continue to grow and feel heavy/sore.",
+        "Visible veins on breasts and abdomen."
+      ],
+      "tips_for_parents": [
+        "Wear comfortable, supportive bras.",
+        "Eat fiber-rich foods to prevent constipation.",
+        "Keep a positive outlook – the first trimester discomforts usually improve soon!",
+        "Discuss any severe symptoms with your healthcare provider."
+      ]
+    },
+    {
+      "week": 9,
+      "title": "Week 9: From Embryo to Fetus - A Milestone!",
+      "image_path": "assets/pregnancystages/week9.jpg",
+      "description": "This is a significant milestone! Your baby is now officially called a **fetus**. This means all major organs and body systems are in place, though they are still very immature and need to grow and develop further. The tiny 'tail' at the end of the spinal cord is almost gone, and external genitalia are forming, though it's too early to determine sex via ultrasound.",
+      "baby_size": "Grape / Cherry (approx. 2.3 cm)",
+      "key_developments": [
+        "The **embryo officially becomes a fetus**.",
+        "The rudimentary 'tail' almost disappears.",
+        "**External genitalia begin to form**, but are indistinguishable.",
+        "Muscles are developing, allowing for twitching and jerking movements (unfelt by you)."
+      ],
+      "mother_symptoms": [
+        "**Nausea** may start to slightly decrease for some women, while for others it persists.",
+        "Initial **weight gain** may become more noticeable.",
+        "Your **baby bump** might start to show very subtly, especially if it's not your first pregnancy.",
+        "**Frequent urination** due to increased blood volume and kidney activity."
+      ],
+      "tips_for_parents": [
+        "You might feel more like yourself this week, but remember that fatigue is still normal.",
+        "Continue to avoid raw or undercooked meats, fish, and unpasteurized dairy.",
+        "Plan your prenatal appointments and tests with your doctor.",
+        "Consider sharing your news with close family and friends if you haven't already."
+      ]
+    },
+    {
+      "week": 10,
+      "title": "Week 10: Vital Organ Refinement & Tooth Buds",
+      "image_path": "assets/pregnancystages/week10.jpg",
+      "description": "Your baby's vital organs are continuing to refine and grow. The kidneys are developing, and the intestines are moving from the umbilical cord into the abdominal cavity. Tiny **tooth buds** are forming under the gums, and the eyelids are now fused shut to protect the developing eyes. Your baby can also begin to swallow amniotic fluid.",
+      "baby_size": "Prune / Kumquat (approx. 3.1 cm)",
+      "key_developments": [
+        "Major organs like kidneys, intestines, brain, and liver continue to develop rapidly.",
+        "**Tooth buds** form under the gums.",
+        "**Eyelids are fused shut** to protect the developing eyes.",
+        "Fetus can begin to swallow amniotic fluid."
+      ],
+      "mother_symptoms": [
+        "Many women report an **increase in energy** as morning sickness starts to wane.",
+        "Your abdomen may feel **bloated or swollen** from uterine growth.",
+        "**Increased vaginal discharge** (leukorrhea) is normal and healthy.",
+        "Your clothes might start feeling a little snug around the waist."
+      ],
+      "tips_for_parents": [
+        "Focus on eating a balanced diet with plenty of fruits, vegetables, and whole grains.",
+        "Consider gentle exercise like walking or prenatal yoga to boost energy.",
+        "Discuss any concerns about vaginal discharge with your doctor.",
+        "Think about comfortable maternity clothes for the coming weeks."
+      ]
+    },
+    {
+      "week": 11,
+      "title": "Week 11: Growing & Moving - Tiny Reflexes",
+      "image_path": "assets/pregnancystages/week11.jpg",
+      "description": "Your baby is becoming increasingly active, though their movements are still too gentle for you to feel. Their **fingers and toes are fully separated**, and tiny **nails are beginning to grow**. The diaphragm is forming, preparing for essential breathing movements. Your baby is getting longer and stretching out.",
+      "baby_size": "Lime (approx. 4.1 cm)",
+      "key_developments": [
+        "**Fingers and toes are fully separated**.",
+        "Tiny **nails** begin to form on fingers and toes.",
+        "**Diaphragm** develops, leading to early breathing movements.",
+        "Reflexes like yawning and stretching become more defined."
+      ],
+      "mother_symptoms": [
+        "**Energy levels continue to improve** for many.",
+        "**Skin changes** may appear, such as **melasma** (dark patches on the face) or a dark line on your abdomen (**linea nigra**).",
+        "Your **hair may become thicker** and shinier due to hormonal changes.",
+        "Mood swings may lessen, but can still occur."
+      ],
+      "tips_for_parents": [
+        "Stay hydrated and use gentle cleansers for your skin.",
+        "Talk to your doctor if skin changes bother you; most fade after pregnancy.",
+        "Enjoy this period of increased energy, as it may not last throughout the entire pregnancy.",
+        "Start researching childbirth classes and parenting resources."
+      ]
+    },
+    {
+      "week": 12,
+      "title": "Week 12: First Trimester Finale & Developing Reflexes",
+      "image_path": "assets/pregnancystages/week12.jpg",
+      "description": "You're at the very end of your first trimester! Your baby's reflexes are becoming more refined, including the ability to curl their toes and fingers, squint, and even suck their thumb. The kidneys are actively producing urine, which is released into the amniotic fluid, contributing to its volume.",
+      "baby_size": "Plum (approx. 5.4 cm)",
+      "key_developments": [
+        "**Reflexes** like sucking, grasping, and swallowing are developing.",
+        "**Kidneys are actively producing urine**.",
+        "Vocal cords begin to form, though your baby won't make sounds yet.",
+        "Hair follicles appear on the skin."
+      ],
+      "mother_symptoms": [
+        "Most women experience a **significant reduction in morning sickness**.",
+        "**Energy levels are typically at their peak** in the late first/early second trimester.",
+        "Your **baby bump is becoming more noticeable**, and maternity clothes might be a necessity.",
+        "The need for frequent urination may temporarily decrease as the uterus rises out of the pelvis."
+      ],
+      "tips_for_parents": [
+        "Celebrate reaching the end of the first trimester – the risk of miscarriage significantly drops.",
+        "Plan a 'babymoon' if possible, enjoying this period of increased energy.",
+        "Consider sharing your pregnancy news more widely.",
+        "Start thinking about names for your little one!"
+      ]
+    },
+    {
+      "week": 13,
+      "title": "Week 13: Welcome to the Second Trimester!",
+      "image_path": "assets/pregnancystages/week13.jpg",
+      "description": "Congratulations, you've entered the second trimester, often called the 'golden trimester' due to increased energy and reduced discomforts! Your baby's major organs are fully formed and now focused on growing and maturing. The intestines, which temporarily grew outside the body in the umbilical cord, now move fully into the abdominal cavity.",
+      "baby_size": "Peach (approx. 7.5 cm)",
+      "key_developments": [
+        "**Intestines migrate fully into the abdominal cavity**.",
+        "**Bone marrow begins producing blood cells**.",
+        "Urine production increases, contributing to amniotic fluid volume.",
+        "Developing unique fingerprints and toe prints."
+      ],
+      "mother_symptoms": [
+        "Many women feel a significant **relief from early pregnancy symptoms** like nausea and fatigue.",
+        "**Energy levels continue to be high**.",
+        "**Appetite typically increases** as morning sickness subsides.",
+        "Your skin may have a 'glowing' appearance due to increased blood flow.",
+        "The uterus is growing rapidly and starting to push above your pubic bone."
+      ],
+      "tips_for_parents": [
+        "Enjoy your renewed energy and appetite! Focus on healthy, nutrient-rich foods.",
+        "This is a good time to start exercising regularly if you haven't already (with your doctor's approval).",
+        "Consider talking to your doctor about genetic screening options if you haven't yet.",
+        "Start a prenatal yoga class or find other ways to stay active."
+      ]
+    },
+    {
+      "week": 14,
+      "title": "Week 14: Developing Facial Expressions & Fine Hair",
+      "image_path": "assets/pregnancystages/week14.jpg",
+      "description": "Your baby's facial muscles are developing, allowing for a range of expressions like squinting, frowning, and grimacing – even though they're not controlled yet! The neck is elongating, making the head more proportionate to the body. Fine, downy hair called **lanugo** is beginning to grow on their body.",
+      "baby_size": "Lemon (approx. 8.7 cm)",
+      "key_developments": [
+        "**Facial muscles develop**, allowing for early expressions.",
+        "Neck elongates, making the head more proportionate.",
+        "**Lanugo** (fine hair) begins to grow over the body.",
+        "The palate (roof of the mouth) is completely formed."
+      ],
+      "mother_symptoms": [
+        "**Continued increase in energy** and feeling well.",
+        "Your **growing belly** is becoming more pronounced.",
+        "Possible **round ligament pain**, sharp or dull aches on one or both sides of your lower abdomen, as your uterus expands.",
+        "Reduced frequency of urination compared to the first trimester."
+      ],
+      "tips_for_parents": [
+        "Wear supportive maternity clothes that accommodate your growing bump.",
+        "Use a heating pad or take warm baths to help with round ligament pain.",
+        "Stay hydrated to prevent cramps.",
+        "Start researching baby gear, but don't feel overwhelmed."
+      ]
+    },
+    {
+      "week": 15,
+      "title": "Week 15: Translucent Skin & Developing Taste",
+      "image_path": "assets/pregnancystages/week15.jpg",
+      "description": "Your baby's skin is still very thin and translucent, making blood vessels visible underneath. Despite this, their **taste buds are developing**, and they can taste the amniotic fluid, which is influenced by your diet! Their skeleton is continuing to harden, though bones are still very flexible.",
+      "baby_size": "Apple (approx. 10.1 cm)",
+      "key_developments": [
+        "Skin is still translucent, allowing blood vessels to be seen.",
+        "**Taste buds are developing**, and they can taste amniotic fluid.",
+        "Skeletal system continues to harden, though bones remain flexible.",
+        "Fetal movement becomes more coordinated, but still likely unfelt."
+      ],
+      "mother_symptoms": [
+        "**Nosebleeds and bleeding gums** are common due to increased blood volume and hormone changes.",
+        "**Increased appetite** continues, ensuring your baby gets enough nutrients.",
+        "**Leg cramps** may begin, especially at night, due to magnesium/calcium deficiencies or pressure on nerves.",
+        "You might notice your **veins becoming more prominent**."
+      ],
+      "tips_for_parents": [
+        "Stay hydrated and avoid rubbing your nose too hard.",
+        "Increase calcium and magnesium intake through diet (dairy, leafy greens) or supplements (if advised by doctor).",
+        "Consider gentle stretches before bed to help with leg cramps.",
+        "Begin prenatal classes on topics like nutrition and exercise during pregnancy."
+      ]
+    },
+    {
+      "week": 16,
+      "title": "Week 16: Sensory Development & First Flutters",
+      "image_path": "assets/pregnancystages/week16.jpg",
+      "description": "Your baby's eyes are beginning to move behind their fused eyelids, and they can perceive light. Their **hearing is also developing**, and they might start reacting to loud noises. You might even start to feel your baby's first subtle movements, often described as 'flutters' or 'gas bubbles' – this is called **quickening**!",
+      "baby_size": "Avocado (approx. 11.6 cm)",
+      "key_developments": [
+        "**Eyes begin to move** behind fused eyelids, perceiving light.",
+        "**Hearing develops**, and the baby may react to loud noises.",
+        "Skeletal system continues to strengthen and harden.",
+        "**Quickening** (first fetal movements) may be felt by the mother."
+      ],
+      "mother_symptoms": [
+        "**First baby movements** (**quickening**) are often felt, especially in second pregnancies.",
+        "**Increasing appetite** and feeling hungrier more often.",
+        "**Gums may bleed easily** when brushing or flossing.",
+        "**Dizziness** when standing up too quickly, due to blood pressure changes."
+      ],
+      "tips_for_parents": [
+        "Cherish those first flutters – they are a magical moment!",
+        "Continue to eat a balanced diet to support your increased appetite.",
+        "Maintain good oral hygiene to prevent gum issues.",
+        "Rise slowly from sitting or lying positions to avoid dizziness."
+      ]
+    },
+    {
+      "week": 17,
+      "title": "Week 17: Fat Accumulation for Warmth",
+      "image_path": "assets/pregnancystages/week17.jpg",
+      "description": "Your baby is starting to accumulate a layer of fat under their skin. This fat is crucial for insulation and will help them regulate their body temperature after birth. The umbilical cord is growing thicker and stronger, efficiently delivering nutrients and oxygen.",
+      "baby_size": "Onion (approx. 13 cm)",
+      "key_developments": [
+        "**Fat deposits begin** to form under the skin for insulation.",
+        "**Umbilical cord thickens and strengthens**.",
+        "Sweat glands are beginning to develop.",
+        "Heart is now pumping around 25 quarts of blood daily."
+      ],
+      "mother_symptoms": [
+        "**More distinct fetal movements** (gentle nudges and rolls) as baby gets stronger.",
+        "**Varicose veins** may start to appear due to increased blood volume and pressure.",
+        "**Increased thirst** is common as your blood volume continues to expand.",
+        "**Indigestion** and constipation may continue or worsen."
+      ],
+      "tips_for_parents": [
+        "Wear compression stockings to help with varicose veins.",
+        "Drink plenty of water to stay hydrated and aid digestion.",
+        "Eat fiber-rich foods and exercise gently to combat constipation.",
+        "Continue to track your baby's movements as they become more consistent."
+      ]
+    },
+    {
+      "week": 18,
+      "title": "Week 18: Feeling the Kicks! & Maturing Nervous System",
+      "image_path": "assets/pregnancystages/week18.jpg",
+      "description": "By now, you're likely feeling your baby's movements more consistently and distinctly – those unmistakable kicks and stretches! Their bones are continuing to harden, and their nervous system is rapidly maturing, allowing for more complex movements and developing senses.",
+      "baby_size": "Bell Pepper (approx. 14.2 cm)",
+      "key_developments": [
+        "**Fetal movements become more distinct and regular**.",
+        "Bones continue to harden and strengthen.",
+        "**Nervous system rapidly develops**, allowing for more complex actions.",
+        "Ears are in their final position on the sides of the head."
+      ],
+      "mother_symptoms": [
+        "**Clearer baby movements** are now felt daily.",
+        "**Backaches** become more common as your growing uterus shifts your center of gravity.",
+        "**Heartburn and indigestion** are persistent for many.",
+        "Mild **swelling (edema)** in your hands and feet may begin, especially by the end of the day."
+      ],
+      "tips_for_parents": [
+        "Practice good posture and wear supportive shoes to alleviate back pain.",
+        "Use pillows to support your growing belly and back when sleeping.",
+        "Avoid spicy or fatty foods that trigger heartburn.",
+        "Elevate your feet when resting to reduce swelling."
+      ]
+    },
+    {
+      "week": 19,
+      "title": "Week 19: Protective Skin Coating - Vernix Caseosa",
+      "image_path": "assets/pregnancystages/week19.jpg",
+      "description": "A greasy, white, cheese-like substance called **vernix caseosa** begins to form on your baby's skin. This protective coating shields their delicate skin from the amniotic fluid and will also help them slide through the birth canal during delivery. Permanent teeth buds are also forming behind the baby teeth.",
+      "baby_size": "Mango (approx. 15.3 cm)",
+      "key_developments": [
+        "**Vernix caseosa** begins to cover the skin for protection.",
+        "Permanent **teeth buds** start to form behind the baby teeth.",
+        "Sensory organs, particularly hearing, continue to mature.",
+        "Genitalia are fully developed and can be seen on ultrasound."
+      ],
+      "mother_symptoms": [
+        "**Increased appetite** and feeling hungry more often.",
+        "More generalized **body aches and pains** as ligaments stretch and joints loosen.",
+        "**Dizziness** may still occur, especially if you lie on your back for too long.",
+        "**Potential for stretch marks** to appear on your belly, breasts, hips, and thighs."
+      ],
+      "tips_for_parents": [
+        "Stay hydrated to prevent dizziness.",
+        "Apply moisturizing cream to your belly to help with itching and potentially reduce stretch marks (though genetics play a big role).",
+        "Consider sleeping on your side to improve blood flow and reduce dizziness.",
+        "Begin making decisions about your birth plan."
+      ]
+    },
+    {
+      "week": 20,
+      "title": "Week 20: Halfway There! Somatic Movement",
+      "image_path": "assets/pregnancystages/week20.jpg",
+      "description": "Congratulations, you're officially halfway through your pregnancy! Your baby is becoming very active, doing somersaults, kicks, and punches. Their hair and nails continue to grow, and they're becoming more responsive to sounds from the outside world.",
+      "baby_size": "Banana / Small cantaloupe (approx. 16.4 cm)",
+      "key_developments": [
+        "**Halfway point of pregnancy**!",
+        "**Increased fetal activity** including somersaults and kicks.",
+        "Hair on the head and body (**lanugo**) continues to grow.",
+        "Nails become more distinct and cover the fingertips/toes."
+      ],
+      "mother_symptoms": [
+        "**Baby's movements are now very clear and frequent**.",
+        "**Difficulty sleeping** due to growing belly and discomfort.",
+        "**Heartburn and indigestion** are common and may worsen.",
+        "Your **growing belly** is unmistakable, leading to backaches and pressure."
+      ],
+      "tips_for_parents": [
+        "Take regular breaks and naps to combat fatigue.",
+        "Use plenty of pillows to support your belly, back, and legs for better sleep.",
+        "Wear comfortable, loose-fitting clothing.",
+        "Discuss any persistent or severe discomfort with your doctor."
+      ]
+    },
+    {
+      "week": 21,
+      "title": "Week 21: Digestive System Maturing & Taste Buds Fine-Tuning",
+      "image_path": "assets/pregnancystages/week21.jpg",
+      "description": "Your baby's digestive system is rapidly maturing. They are now regularly swallowing amniotic fluid and absorbing small amounts of sugar from it, which helps them practice for feeding after birth. Their taste buds are becoming more refined, allowing them to differentiate flavors in the amniotic fluid.",
+      "baby_size": "Carrot / Head of endive (approx. 26.7 cm - crown to heel)",
+      "key_developments": [
+        "**Digestive system matures**, processing swallowed amniotic fluid.",
+        "**Taste buds become more refined**.",
+        "**Fetal movements are stronger** and more purposeful.",
+        "Red blood cell production shifts from the liver to the bone marrow."
+      ],
+      "mother_symptoms": [
+        "**Increased energy** compared to the first trimester, but fatigue can still set in with prolonged activity.",
+        "**Swollen ankles and feet** are common, especially at the end of the day.",
+        "**Braxton Hicks contractions** (practice contractions) may begin, feeling like a tightening of the uterus.",
+        "**Leg cramps** at night may continue or worsen."
+      ],
+      "tips_for_parents": [
+        "Elevate your feet and ankles whenever possible to reduce swelling.",
+        "Stay well-hydrated to help with Braxton Hicks contractions.",
+        "Stretch your calf muscles before bed to prevent leg cramps.",
+        "Start researching car seats and strollers to understand your options."
+      ]
+    },
+    {
+      "week": 22,
+      "title": "Week 22: Eyebrows & Eyelashes Fully Formed",
+      "image_path": "assets/pregnancystages/week22.jpg",
+      "description": "Your baby's eyebrows and eyelashes are now fully formed. The fine lanugo hair covers most of their body, and their skin is still thin but becoming less transparent. Their senses of touch and hearing are becoming increasingly refined.",
+      "baby_size": "Spaghetti squash (approx. 27.8 cm - crown to heel)",
+      "key_developments": [
+        "**Eyebrows and eyelashes are fully formed**.",
+        "Lanugo covers almost the entire body.",
+        "Skin continues to thicken, becoming less transparent.",
+        "Senses of touch and hearing are well-developed."
+      ],
+      "mother_symptoms": [
+        "**More noticeable baby movements**, including kicks and turns.",
+        "Your **blood volume continues to increase** significantly.",
+        "**Pelvic pressure** may start to become more noticeable.",
+        "**Stretch marks** may become more pronounced or new ones may appear."
+      ],
+      "tips_for_parents": [
+        "Engage in conversations with your baby; they can hear your voice now!",
+        "Continue to moisturize your skin to help with itching and dryness.",
+        "Practice pelvic tilts and other exercises to alleviate pelvic pressure.",
+        "Consider investing in comfortable, supportive footwear."
+      ]
+    },
+    {
+      "week": 23,
+      "title": "Week 23: Practicing Breathing & Gaining Weight",
+      "image_path": "assets/pregnancystages/week23.jpg",
+      "description": "Your baby is actively practicing breathing movements, inhaling and exhaling amniotic fluid. These 'practice breaths' are essential for lung development, even though they won't breathe air until after birth. They're also gaining more weight and looking plumper, as fat continues to accumulate under their skin.",
+      "baby_size": "Grapefruit (approx. 28.9 cm - crown to heel)",
+      "key_developments": [
+        "**Practicing breathing movements** by 'inhaling' amniotic fluid.",
+        "**Gaining weight** and accumulating more fat under the skin.",
+        "Skin becomes less translucent and more opaque.",
+        "Rapid eye movements (REM) during sleep cycles are observed."
+      ],
+      "mother_symptoms": [
+        "**Increased back pain** due to changes in posture and weight distribution.",
+        "**Insomnia** or difficulty sleeping due to discomfort and frequent bathroom trips.",
+        "**Shortness of breath** as your growing uterus puts pressure on your diaphragm.",
+        "**Increased appetite** continues as your baby demands more nutrients."
+      ],
+      "tips_for_parents": [
+        "Sleep on your side with a pillow between your knees and under your belly.",
+        "Practice deep breathing exercises to help with shortness of breath.",
+        "Eat smaller, more frequent meals to manage appetite without overeating.",
+        "Start thinking about maternity leave and childcare options."
+      ]
+    },
+    {
+      "week": 24,
+      "title": "Week 24: Responding to Sounds & Lung Development",
+      "image_path": "assets/pregnancystages/week24.jpg",
+      "description": "Your baby's inner ear is fully developed, making their sense of balance and hearing quite acute. They can now actively distinguish familiar voices, especially yours and your partner's, and may respond to loud noises with a jolt or increased movement. The lungs are developing rapidly, with air sacs (alveoli) beginning to form.",
+      "baby_size": "Corn on the cob (approx. 30 cm - crown to heel)",
+      "key_developments": [
+        "**Inner ear fully developed**, enhancing balance and hearing.",
+        "**Distinguishes voices and sounds** from the outside world.",
+        "**Lungs developing rapidly**, with formation of air sacs.",
+        "Brain activity increases, establishing sleep-wake cycles."
+      ],
+      "mother_symptoms": [
+        "**Baby's movements are very distinct** and can often be seen from the outside.",
+        "**Growing abdominal discomfort** and pressure.",
+        "**Heartburn** may intensify as your growing uterus pushes up on your stomach.",
+        "**Sciatica pain** (sharp pain in the buttocks or down the leg) may occur if the uterus presses on the sciatic nerve."
+      ],
+      "tips_for_parents": [
+        "Talk, sing, and read to your baby regularly; they love to hear your voice!",
+        "Avoid lying flat on your back, which can cause dizziness and reduce blood flow.",
+        "Use over-the-counter antacids (doctor-approved) for heartburn relief.",
+        "Try gentle stretches and warm compresses for sciatic pain."
+      ]
+    },
+    {
+      "week": 25,
+      "title": "Week 25: Continued Fat & Hair Growth",
+      "image_path": "assets/pregnancystages/week25.jpg",
+      "description": "Your baby continues to gain fat, making their skin smoother and less wrinkled. Hair growth on their head is becoming more prominent, and tiny blood vessels (capillaries) are developing in the lungs, preparing them for breathing air. Your baby is getting plumper and more proportional.",
+      "baby_size": "Rutabaga / Head of cauliflower (approx. 34.6 cm - crown to heel)",
+      "key_developments": [
+        "**Continued fat accumulation**, smoothing out the skin.",
+        "**Hair growth on the head** becomes more prominent.",
+        "Pulmonary capillaries develop in the lungs.",
+        "Hands are often in a fisted position, and baby may grasp the umbilical cord."
+      ],
+      "mother_symptoms": [
+        "**More intense Braxton Hicks contractions** (practice contractions), which are usually painless and irregular.",
+        "**Pelvic pain** due to the softening of ligaments and pressure of the baby's head.",
+        "**Swollen legs and feet** may become more noticeable and persistent.",
+        "**Itchy skin** on your belly, breasts, and thighs as your skin stretches."
+      ],
+      "tips_for_parents": [
+        "Differentiate between Braxton Hicks and true labor contractions (true labor contractions are regular and get stronger).",
+        "Take warm baths or use maternity support belts for pelvic pain.",
+        "Wear comfortable, loose-fitting clothes and avoid standing for long periods.",
+        "Apply anti-itch creams or lotions to soothe itchy skin."
+      ]
+    },
+    {
+      "week": 26,
+      "title": "Week 26: Lung Maturation & Eye Movements",
+      "image_path": "assets/pregnancystages/week26.jpg",
+      "description": "The lungs are still maturing but are now producing **surfactant**, a substance that helps the air sacs (alveoli) inflate properly and prevents them from collapsing. Your baby's eyes are starting to open slightly, and they can respond to light, distinguishing between light and dark.",
+      "baby_size": "Head of lettuce (approx. 35.6 cm - crown to heel)",
+      "key_developments": [
+        "**Lungs begin producing surfactant**, crucial for breathing after birth.",
+        "**Eyes start to open and close**, responding to light.",
+        "Brain activity increases significantly, with development of billions of neurons.",
+        "Increased muscle tone and coordination."
+      ],
+      "mother_symptoms": [
+        "**Baby's movements are very distinct** and can sometimes be seen as ripples on your belly.",
+        "**Difficulty sleeping** becomes more pronounced due to discomfort and frequent bathroom trips.",
+        "**Heartburn and indigestion** are very common and can be bothersome.",
+        "**Snoring** may begin or worsen due to swelling in nasal passages."
+      ],
+      "tips_for_parents": [
+        "Try different sleeping positions with support pillows.",
+        "Eat smaller, more frequent meals to manage heartburn.",
+        "Discuss any new or worsening symptoms, like severe swelling or persistent headaches, with your doctor.",
+        "Consider touring hospitals or birth centers."
+      ]
+    },
+    {
+      "week": 27,
+      "title": "Week 27: Third Trimester Approaches & Active Sleep",
+      "image_path": "assets/pregnancystages/week27.jpg",
+      "description": "You're at the cusp of your third trimester! Your baby can now fully open and close their eyes. Their brain activity is significantly increasing, indicating periods of active sleep (REM sleep), similar to a newborn. They are also starting to respond more consistently to familiar sounds and voices.",
+      "baby_size": "Cauliflower / Large cucumber (approx. 36.6 cm - crown to heel)",
+      "key_developments": [
+        "**Eyes can fully open and close**.",
+        "**Increased brain activity** and more defined sleep-wake cycles.",
+        "Further development of the senses, especially hearing.",
+        "The baby becomes more responsive to external stimuli."
+      ],
+      "mother_symptoms": [
+        "**Third-trimester discomforts** like increased pressure, backache, and fatigue may begin to set in.",
+        "**Restless legs syndrome** (an uncomfortable urge to move your legs) may start.",
+        "**More frequent urination** as the baby puts pressure on your bladder.",
+        "**Fatigue may return** as your body carries more weight."
+      ],
+      "tips_for_parents": [
+        "Continue to stay active, but listen to your body and rest when needed.",
+        "Ensure you're getting enough iron to combat fatigue.",
+        "Stay hydrated and avoid bladder irritants to help with frequent urination.",
+        "Start preparing your home for the baby's arrival."
+      ]
+    },
+    {
+      "week": 28,
+      "title": "Week 28: Welcome to the Third Trimester! Rapid Weight Gain",
+      "image_path": "assets/pregnancystages/week28.jpg",
+      "description": "Congratulations, you've officially entered your third trimester! Your baby is now rapidly gaining weight and fat, smoothing out their skin and making them look plumper. Their movements are becoming more powerful and coordinated, often causing visible bumps on your belly.",
+      "baby_size": "Eggplant (approx. 37.6 cm - crown to heel)",
+      "key_developments": [
+        "**Rapid weight gain and fat accumulation**.",
+        "**Stronger, more coordinated movements**.",
+        "Lungs are maturing further, though still need time.",
+        "**All five senses are now functioning**."
+      ],
+      "mother_symptoms": [
+        "**Increased pressure on your bladder**, leading to even more frequent bathroom trips.",
+        "**Shortness of breath** as your uterus pushes up on your diaphragm.",
+        "**Swelling in your extremities** (hands, feet, ankles) is common.",
+        "**Back and hip pain** become more pronounced due to weight gain and loosening ligaments."
+      ],
+      "tips_for_parents": [
+        "Elevate your feet and avoid standing for long periods to reduce swelling.",
+        "Try a maternity support belt for back and hip pain.",
+        "Practice relaxation techniques and deep breathing for shortness of breath.",
+        "Start thinking about your hospital bag and what you'll need."
+      ]
+    },
+    {
+      "week": 29,
+      "title": "Week 29: Strengthening Muscles & Lung Maturation",
+      "image_path": "assets/pregnancystages/week29.jpg",
+      "description": "Your baby's muscles are continuing to strengthen, and their kicks and punches are now quite forceful! The lungs are still maturing, getting closer to being fully ready for independent breathing outside the womb. Your baby's head may start to turn downwards in preparation for birth.",
+      "baby_size": "Butternut squash (approx. 38.6 cm - crown to heel)",
+      "key_developments": [
+        "**Muscles strengthen significantly**, leading to powerful movements.",
+        "**Lungs continue to mature**, producing more surfactant.",
+        "Baby may begin to orient head-down in preparation for birth.",
+        "Brain cells are rapidly developing and forming connections."
+      ],
+      "mother_symptoms": [
+        "**Difficulty finding comfortable sleeping positions** due to your growing belly.",
+        "**More frequent Braxton Hicks contractions**, which may feel stronger now.",
+        "**Heartburn and indigestion** can be quite bothersome.",
+        "**Increased breast size** and possible leakage of **colostrum** (early breast milk)."
+      ],
+      "tips_for_parents": [
+        "Sleep on your side with a body pillow for support.",
+        "Keep a notepad by your bed to jot down thoughts if insomnia strikes.",
+        "Wear breast pads if you're leaking colostrum.",
+        "Begin gathering supplies for breastfeeding, if you plan to."
+      ]
+    },
+    {
+      "week": 30,
+      "title": "Week 30: Temperature Regulation & Vision Development",
+      "image_path": "assets/pregnancystages/week30.jpg",
+      "description": "Your baby's brain is rapidly developing the ability to regulate body temperature, a crucial function for life outside the womb. Red blood cells are actively forming in their bone marrow, and their sense of vision is still developing, though they can already distinguish light and dark.",
+      "baby_size": "Cabbage (approx. 39.9 cm - crown to heel)",
+      "key_developments": [
+        "**Brain develops temperature regulation** capabilities.",
+        "**Red blood cells form in the bone marrow**.",
+        "Vision continues to develop, responding to light.",
+        "Increased fat storage beneath the skin."
+      ],
+      "mother_symptoms": [
+        "**Increased fatigue** as your body works harder.",
+        "**Difficulty breathing deeply** due to uterine pressure on lungs.",
+        "**Sciatica or nerve pain** may persist or worsen.",
+        "**Frequent trips to the bathroom** as bladder pressure increases."
+      ],
+      "tips_for_parents": [
+        "Rest whenever possible and avoid overexertion.",
+        "Practice good posture to maximize lung capacity.",
+        "Elevate your hips with a pillow while lying down to relieve sciatic pain.",
+        "Keep a water bottle handy for frequent sips."
+      ]
+    },
+    {
+      "week": 31,
+      "title": "Week 31: Plumping Up & Crowded Quarters",
+      "image_path": "assets/pregnancystages/week31.jpg",
+      "description": "Your baby is accumulating even more fat, making their skin appear less wrinkled and more plump. It's getting quite crowded in your uterus now, so your baby has less room for grand acrobatic moves, but you'll still feel strong pushes and nudges. Their immune system is also developing, preparing to fight off germs.",
+      "baby_size": "Coconut (approx. 41.1 cm - crown to heel)",
+      "key_developments": [
+        "**Skin becomes smoother and plumper** as fat accumulates.",
+        "**Less room for major movements** in the uterus.",
+        "**Immune system develops**, receiving antibodies from you.",
+        "Brain cells are rapidly forming billions of connections."
+      ],
+      "mother_symptoms": [
+        "**More pressure on your pelvis and lower back**.",
+        "A **waddling gait** may start as your joints loosen and balance shifts.",
+        "**Discomfort from baby's movements** as they become stronger and have less space.",
+        "**Insomnia** or disrupted sleep is very common."
+      ],
+      "tips_for_parents": [
+        "Continue to use supportive pillows for sleeping.",
+        "Practice pelvic floor exercises (Kegels) to strengthen muscles for labor.",
+        "Stay active with gentle walks if comfortable.",
+        "Consider packing a 'go-bag' for labor and delivery."
+      ]
+    },
+    {
+      "week": 32,
+      "title": "Week 32: Fully Formed Organs & Rapid Weight Gain",
+      "image_path": "assets/pregnancystages/week32.jpg",
+      "description": "All of your baby's major organs are now fully formed, with the exception of the lungs, which are still maturing. They are now gaining about a half-pound (around 225 grams) per week, putting on important fat for insulation and energy after birth. Their bones are hardening, but the skull bones remain soft and separate to allow for passage through the birth canal.",
+      "baby_size": "Napa cabbage (approx. 42.4 cm - crown to heel)",
+      "key_developments": [
+        "**All major organs are fully formed** (except lungs, still maturing).",
+        "**Rapid weight gain continues**, about a half-pound per week.",
+        "**Bones are hardening**, but skull bones remain soft and separate.",
+        "Baby practices breathing movements and swallowing."
+      ],
+      "mother_symptoms": [
+        "**Increased discomfort and pressure** all over your abdomen.",
+        "**Frequent urination returns** as the baby presses down on your bladder.",
+        "**Swelling in your feet and ankles** may become more noticeable and persistent.",
+        "The **nesting instinct** (a sudden urge to clean and organize) may kick in."
+      ],
+      "tips_for_parents": [
+        "Delegate chores and don't overdo it with nesting activities.",
+        "Stay well-hydrated to reduce swelling and aid digestion.",
+        "Attend your regular prenatal appointments, which are now more frequent.",
+        "Finalize your birth plan and discuss it with your healthcare provider."
+      ]
+    },
+    {
+      "week": 33,
+      "title": "Week 33: Antibodies & Lung Maturity",
+      "image_path": "assets/pregnancystages/week33.jpg",
+      "description": "Your baby is receiving a significant amount of antibodies from you through the placenta, boosting their immune system and preparing them to fight off germs after birth. The lungs are continuing to mature rapidly, getting very close to being ready for independent breathing. Your baby is getting heavier and stronger.",
+      "baby_size": "Pineapple (approx. 43.7 cm - crown to heel)",
+      "key_developments": [
+        "**Receiving antibodies from the mother** for immunity.",
+        "**Lungs are almost fully mature**, increasing surfactant production.",
+        "Brain continues rapid development, preparing for complex functions.",
+        "Baby can distinguish light and dark and respond to sounds."
+      ],
+      "mother_symptoms": [
+        "**Fatigue and general tiredness** are common as you carry more weight.",
+        "**Difficulty sleeping** due to discomfort and frequent interruptions.",
+        "**More pronounced Braxton Hicks contractions**, which may feel more intense.",
+        "**Pelvic pain and pressure** due to the baby's position and weight."
+      ],
+      "tips_for_parents": [
+        "Rest whenever possible and avoid strenuous activities.",
+        "Continue to practice relaxation techniques for sleep.",
+        "Discuss any concerns about contractions with your doctor.",
+        "Consider attending a baby care or parenting class."
+      ]
+    },
+    {
+      "week": 34,
+      "title": "Week 34: Head Down & Shedding Lanugo",
+      "image_path": "assets/pregnancystages/week34.jpg",
+      "description": "Your baby is likely in a head-down position now, preparing for birth. This position helps them descend into the pelvis. Most of the fine **lanugo** hair is starting to disappear from their body, replaced by a thicker layer of fat. Their skin is becoming smoother and plumper.",
+      "baby_size": "Cantaloupe (approx. 45 cm - crown to heel)",
+      "key_developments": [
+        "**Head-down position becomes more common**.",
+        "**Lanugo begins to shed** from the body.",
+        "Skin becomes smoother and plumper with increased fat.",
+        "Central nervous system continues to mature."
+      ],
+      "mother_symptoms": [
+        "**Increased pressure on the cervix and bladder**.",
+        "**More intense and frequent Braxton Hicks contractions**.",
+        "**Shortness of breath** may persist.",
+        "**General achiness and soreness** as your body prepares for labor."
+      ],
+      "tips_for_parents": [
+        "Stay active with gentle walks if comfortable, as this can help the baby descend.",
+        "Keep track of fetal movements daily, as instructed by your doctor.",
+        "Discuss any concerns about baby's position with your healthcare provider.",
+        "Ensure your birth plan is finalized and shared with your labor support team."
+      ]
+    },
+    {
+      "week": 35,
+      "title": "Week 35: Crowded Quarters & Final Weight Gain",
+      "image_path": "assets/pregnancystages/week35.jpg",
+      "description": "It's getting very crowded in your uterus! Your baby is taking up most of the space, leaving less room for big movements, but you'll still feel strong pushes and stretches. They are continuing to gain significant weight and fat, reaching a healthy birth weight.",
+      "baby_size": "Honeydew melon (approx. 46.2 cm - crown to heel)",
+      "key_developments": [
+        "**Uterus is very crowded**, limiting major movements.",
+        "**Continued rapid weight and fat gain**.",
+        "Kidneys are fully developed and functioning.",
+        "Liver is mature enough to process waste."
+      ],
+      "mother_symptoms": [
+        "**Significant discomfort and pressure** due to the baby's size and position.",
+        "**Even more frequent bathroom trips**.",
+        "**Difficulty moving around** and feeling clumsy.",
+        "**Insomnia and restlessness** are very common."
+      ],
+      "tips_for_parents": [
+        "Prioritize rest and naps whenever possible.",
+        "Stay comfortable with loose clothing and supportive bedding.",
+        "Ensure your car seat is installed correctly and inspected by a professional.",
+        "Review infant CPR and first aid basics."
+      ]
+    },
+    {
+      "week": 36,
+      "title": "Week 36: Full Term & Ready for Birth",
+      "image_path": "assets/pregnancystages/week36.jpg",
+      "description": "Your baby is now considered **full-term**! This is a major milestone, meaning their body systems are generally ready for life outside the womb. They are continuing to put on fat, which will help them regulate their body temperature after birth. The skull bones remain soft and separate, allowing for flexibility during delivery.",
+      "baby_size": "Romaine lettuce / Jackfruit (approx. 47.4 cm - crown to heel)",
+      "key_developments": [
+        "**Considered full-term** (37 weeks gestation).",
+        "**Continued fat accumulation** for insulation and energy.",
+        "**Skull bones remain soft and separate** for birth.",
+        "Lungs are generally mature enough for independent breathing."
+      ],
+      "mother_symptoms": [
+        "**Baby 'dropping' or 'lightening'** (when the baby's head engages in the pelvis), which can relieve pressure on your lungs.",
+        "**Increased pelvic pressure** and a feeling of the baby sitting lower.",
+        "**Easier breathing** (if lightening occurs) but increased pressure on bladder.",
+        "**Increased vaginal discharge** due to cervical changes."
+      ],
+      "tips_for_parents": [
+        "Get your hospital bag completely packed and ready by the door.",
+        "Know the signs of labor and when to call your doctor or midwife.",
+        "Review your birth plan with your partner and labor support team.",
+        "Try to relax and enjoy these last few days or weeks."
+      ]
+    },
+    {
+      "week": 37,
+      "title": "Week 37: Practice Breathing & Sucking Reflex",
+      "image_path": "assets/pregnancystages/week37.jpg",
+      "description": "Your baby continues to diligently practice breathing by inhaling and exhaling amniotic fluid. Their sucking reflex is also becoming very strong, which is crucial for feeding after birth. They're developing a healthy layer of fat, making them appear plumper.",
+      "baby_size": "Swiss chard (approx. 48.6 cm - crown to heel)",
+      "key_developments": [
+        "**Stronger practice breathing movements**.",
+        "**Sucking reflex strengthens** in preparation for feeding.",
+        "Coordination improves, with stronger grip reflex.",
+        "Digestive system is fully ready to process breast milk or formula."
+      ],
+      "mother_symptoms": [
+        "**More intense and frequent Braxton Hicks contractions**.",
+        "**Increased back pain and pelvic pressure**.",
+        "**Trouble sleeping** is very common due to discomfort and anticipation.",
+        "**Nesting instinct** may be very strong, with a desire to clean and organize."
+      ],
+      "tips_for_parents": [
+        "Focus on relaxation techniques and breathing exercises.",
+        "Get as much rest as you can, even if it's in short bursts.",
+        "Ensure all baby supplies are ready and nursery is complete.",
+        "Discuss pain management options for labor with your healthcare provider."
+      ]
+    },
+    {
+      "week": 38,
+      "title": "Week 38: Shedding Vernix & Lanugo - Plumping Up",
+      "image_path": "assets/pregnancystages/week38.jpg",
+      "description": "Most of the lanugo and vernix caseosa have shed from your baby's skin and are now floating in the amniotic fluid. They are gaining about an ounce (around 28 grams) of fat per day, getting delightfully plump and ready for the world. Their organs are fully developed and ready to function independently.",
+      "baby_size": "Rhubarb (approx. 49.8 cm - crown to heel)",
+      "key_developments": [
+        "**Shedding of lanugo and vernix** from the skin.",
+        "**Daily fat gain** continues, making baby plumper.",
+        "All organs are ready for independent function.",
+        "Brain continues to grow rapidly."
+      ],
+      "mother_symptoms": [
+        "**Increased pelvic pressure and discomfort**.",
+        "**Possible diarrhea** as your body prepares for labor.",
+        "**Loss of the mucus plug** (bloody show), which can happen days or hours before labor.",
+        "**Pre-labor signs** like increased contractions, lower back ache, or feeling restless."
+      ],
+      "tips_for_parents": [
+        "Pay close attention to any signs of labor.",
+        "Stay in close communication with your doctor or midwife.",
+        "Eat light, easily digestible meals.",
+        "Rest and conserve your energy for labor."
+      ]
+    },
+    {
+      "week": 39,
+      "title": "Week 39: Fully Developed & Strong Grip",
+      "image_path": "assets/pregnancystages/week39.jpg",
+      "description": "Your baby is considered fully developed and truly ready for birth. Their grip is surprisingly strong, and they are storing crucial fat for insulation and energy reserves after delivery. They're eagerly waiting for their grand entrance!",
+      "baby_size": "Small watermelon (approx. 50.7 cm - crown to heel)",
+      "key_developments": [
+        "**Fully developed and ready for birth**.",
+        "**Strong grip reflex**.",
+        "Storing significant fat for post-birth adaptation.",
+        "Brain and nervous system continue to mature."
+      ],
+      "mother_symptoms": [
+        "**More intense and consistent contractions** (true labor often has a pattern).",
+        "**Increased pressure and pain** in your pelvis and perineum.",
+        "**Difficulty walking** and general clumsiness.",
+        "**Anticipation and excitement** for meeting your baby!"
+      ],
+      "tips_for_parents": [
+        "Confirm your birth support person is on standby.",
+        "Have your route to the hospital or birth center planned.",
+        "Trust your body and instincts as labor approaches.",
+        "Try to relax and remember that your baby will be here soon."
+      ]
+    },
+    {
+      "week": 40,
+      "title": "Week 40: Your Due Date! Any Day Now...",
+      "image_path": "assets/pregnancystages/week40.jpg",
+      "description": "Today is your estimated due date! While some babies arrive precisely on time, many come a little earlier or later. Your baby is fully prepared for birth, still gaining weight, and their nails may even be long enough to scratch themselves. Labor could begin at any moment now!",
+      "baby_size": "Watermelon (approx. 51 cm - crown to heel)",
+      "key_developments": [
+        "**Full-term and ready for birth**.",
+        "**Continued weight gain**.",
+        "Nails may be long, requiring trimming after birth.",
+        "All systems are go for life outside the womb!"
+      ],
+      "mother_symptoms": [
+        "**Labor signs** becoming more pronounced and regular.",
+        "**Nesting urge** peaking – an intense desire to prepare for the baby.",
+        "**Mixture of anxiety and excitement**.",
+        "Extreme fatigue and general discomfort."
+      ],
+      "tips_for_parents": [
+        "Try to be patient, babies come when they're ready.",
+        "Stay connected with your healthcare provider for guidance.",
+        "Rest as much as possible, as labor can be a long process.",
+        "Take a final photo of your pregnant belly!"
+      ]
+    },
+    {
+      "week": 41,
+      "title": "Week 41: Post-Term Baby - Waiting & Monitoring",
+      "image_path": "assets/pregnancystages/week41.jpg",
+      "description": "You're now one week past your estimated due date. While most babies arrive by 40 weeks, it's not uncommon for some to take a little longer. Your baby is now considered **post-term**. Your doctor will monitor you closely to ensure the placenta is still functioning optimally and your baby is doing well. They will likely discuss induction options.",
+      "baby_size": "Small pumpkin (approx. 51.5 cm - crown to heel)",
+      "key_developments": [
+        "**Continues to grow and gain weight**.",
+        "Nails and hair may be longer.",
+        "**Placenta may start to show signs of aging** (calcification), which can affect its efficiency.",
+        "Amniotic fluid levels may decrease."
+      ],
+      "mother_symptoms": [
+        "**Increased anxiety about induction** or waiting.",
+        "**More intense pressure and contractions** (Braxton Hicks or early labor).",
+        "**Increased monitoring appointments** (NST, BPP) to check on baby's well-being.",
+        "**Extreme fatigue** due to continued pregnancy and anticipation."
+      ],
+      "tips_for_parents": [
+        "Trust your healthcare team's recommendations for monitoring and induction.",
+        "Continue to track fetal movements diligently.",
+        "Find ways to distract yourself and manage any anxiety.",
+        "Know that your baby will be here soon!"
+      ]
+    },
+    {
+      "week": 42,
+      "title": "Week 42: The Final Waiting Game - Induction Time",
+      "image_path": "assets/pregnancystages/week42.jpg",
+      "description": "You are now two weeks past your due date. At this point, your healthcare provider will almost certainly discuss or schedule an induction of labor to ensure the well-being of both you and your baby. While your baby continues to grow, extended post-term pregnancies can carry increased risks. Your little one is eager to meet you!",
+      "baby_size": "Larger pumpkin (approx. 52 cm - crown to heel)",
+      "key_developments": [
+        "**Continued growth and weight gain**.",
+        "Potential for dry or peeling skin due to loss of vernix.",
+        "**Preparation for induction of labor**.",
+        "Baby is ready to adapt to the outside world."
+      ],
+      "mother_symptoms": [
+        "**High levels of discomfort and anticipation**.",
+        "**Frequent medical check-ups and monitoring**.",
+        "**Emotional readiness for labor** and meeting your baby.",
+        "**Likely scheduling or undergoing labor induction**."
+      ],
+      "tips_for_parents": [
+        "Stay positive and focus on the exciting arrival ahead.",
+        "Communicate openly with your medical team about any concerns.",
+        "Trust in the process and your body's ability to labor.",
+        "You're almost there – soon you'll hold your baby in your arms!"
+      ]
+    }
+  ],
+  "metadata": {
+    "total_stages": 42,
+    "version": "1.2",
+    "last_updated": "2024-05-27",
+    "image_format": "png",
+    "description": "A comprehensive week-by-week guide to pregnancy, detailing fetal development, maternal symptoms, and helpful tips for expectant parents."
+  }
+}
