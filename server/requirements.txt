@@ -197,7 +197,7 @@ nltk==3.9.1
 noisereduce==3.0.3
 notebook_shim==0.2.4
 numba==0.60.0
-numpy==2.2.4
+numpy==1.24.4
 ollama==0.4.7
 openai==1.72.0
 opencv-contrib-python==4.11.0.86
