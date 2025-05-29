@@ -5,7 +5,6 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from ollama import chat
 from flask_cors import CORS
 import google.generativeai as genai
 from supabase import create_client, Client
@@ -15,7 +14,6 @@ CORS(app)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-OLLAMA_MODEL_ID = os.environ.get("OLLAMA_MODEL_ID")
 
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
