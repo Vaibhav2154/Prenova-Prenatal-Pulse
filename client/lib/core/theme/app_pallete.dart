@@ -9,7 +9,8 @@ class AppPallete {
   static const textColor = Color(0xFF120d10);
   static const secondaryFgColor = Color(0xFF120d10);
   static const backgroundColor = Color(0xFFf5f5f5);
-  static const gradient1 = Color(0xFFfb6fa9);
+  static const fadeprimary = Color(0xFFfb6fa9);
+  static const gradient1 = Colors.pinkAccent;
   static const primaryFgColor = Color(0xFF054185);
   static const gradient3 = Color(0xFF643172);
   static const gradient2 = Color(0xFFb34da5);

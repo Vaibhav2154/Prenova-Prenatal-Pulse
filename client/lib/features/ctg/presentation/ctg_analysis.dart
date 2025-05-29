@@ -9,42 +9,180 @@ import 'package:prenova/core/theme/app_pallete.dart';
 import 'dart:convert';
 import 'package:prenova/features/auth/auth_service.dart';
 
-class PregnancyRiskScreen extends StatefulWidget {
+class CTGAnalysisScreen extends StatefulWidget {
   @override
-  _PregnancyRiskScreenState createState() => _PregnancyRiskScreenState();
+  _CTGAnalysisScreenState createState() => _CTGAnalysisScreenState();
 }
 
-class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
+class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
-
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController systolicBPController = TextEditingController();
-  final TextEditingController diastolicBPController = TextEditingController();
-  final TextEditingController bloodGlucoseController = TextEditingController();
-  final TextEditingController bodyTempController = TextEditingController();
-  final TextEditingController heartRateController = TextEditingController();
   final AuthService _authService = AuthService();
+
+  // CTG feature controllers
+  final TextEditingController baselineValueController = TextEditingController();
+  final TextEditingController accelerationsController = TextEditingController();
+  final TextEditingController fetalMovementController = TextEditingController();
+  final TextEditingController uterineContractionsController = TextEditingController();
+  final TextEditingController lightDecelerationsController = TextEditingController();
+  final TextEditingController severeDecelerationsController = TextEditingController();
+  final TextEditingController prolongedDecelerationsController = TextEditingController();
+  final TextEditingController abnormalShortTermController = TextEditingController();
+  final TextEditingController meanShortTermController = TextEditingController();
+  final TextEditingController abnormalLongTermController = TextEditingController();
+  final TextEditingController meanLongTermController = TextEditingController();
+  final TextEditingController histogramWidthController = TextEditingController();
+  final TextEditingController histogramMinController = TextEditingController();
+  final TextEditingController histogramMaxController = TextEditingController();
+  final TextEditingController histogramPeaksController = TextEditingController();
 
   String _prediction = "";
   bool _isLoading = false;
-  String _selectedTempUnit = 'Celsius';
   late Future<List<Map<String, dynamic>>> _previousSubmissions;
+
+  // CTG feature data
+  final List<Map<String, dynamic>> ctgFeatures = [
+    {
+      'label': 'Baseline Value',
+      'controller': null,
+      'icon': Icons.timeline,
+      'hint': 'Normal: 110-160',
+      'suffix': 'bpm',
+    },
+    {
+      'label': 'Accelerations',
+      'controller': null,
+      'icon': Icons.trending_up,
+      'hint': 'Count per hour',
+      'suffix': '/hr',
+    },
+    {
+      'label': 'Fetal Movement',
+      'controller': null,
+      'icon': Icons.child_care,
+      'hint': 'Movement count',
+      'suffix': 'count',
+    },
+    {
+      'label': 'Uterine Contractions',
+      'controller': null,
+      'icon': Icons.compress,
+      'hint': 'Contractions per hour',
+      'suffix': '/hr',
+    },
+    {
+      'label': 'Light Decelerations',
+      'controller': null,
+      'icon': Icons.trending_down,
+      'hint': 'Count',
+      'suffix': 'count',
+    },
+    {
+      'label': 'Severe Decelerations',
+      'controller': null,
+      'icon': Icons.warning,
+      'hint': 'Count',
+      'suffix': 'count',
+    },
+    {
+      'label': 'Prolonged Decelerations',
+      'controller': null,
+      'icon': Icons.hourglass_bottom,
+      'hint': 'Count',
+      'suffix': 'count',
+    },
+    {
+      'label': 'Abnormal Short Term Variability',
+      'controller': null,
+      'icon': Icons.scatter_plot,
+      'hint': 'Percentage',
+      'suffix': '%',
+    },
+    {
+      'label': 'Mean Short Term Variability',
+      'controller': null,
+      'icon': Icons.show_chart,
+      'hint': 'Mean value',
+      'suffix': 'ms',
+    },
+    {
+      'label': 'Abnormal Long Term Variability',
+      'controller': null,
+      'icon': Icons.timeline,
+      'hint': 'Percentage',
+      'suffix': '%',
+    },
+    {
+      'label': 'Mean Long Term Variability',
+      'controller': null,
+      'icon': Icons.analytics,
+      'hint': 'Mean value',
+      'suffix': 'ms',
+    },
+    {
+      'label': 'Histogram Width',
+      'controller': null,
+      'icon': Icons.bar_chart,
+      'hint': 'Width value',
+      'suffix': 'bpm',
+    },
+    {
+      'label': 'Histogram Min',
+      'controller': null,
+      'icon': Icons.south,
+      'hint': 'Minimum value',
+      'suffix': 'bpm',
+    },
+    {
+      'label': 'Histogram Max',
+      'controller': null,
+      'icon': Icons.north,
+      'hint': 'Maximum value',
+      'suffix': 'bpm',
+    },
+    {
+      'label': 'Histogram Number of Peaks',
+      'controller': null,
+      'icon': Icons.signal_cellular_alt,
+      'hint': 'Peak count',
+      'suffix': 'count',
+    },
+  ];
+
+  List<TextEditingController> controllers = [];
 
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
     _previousSubmissions = _fetchPreviousSubmissions();
   }
 
-  double _convertToFahrenheit(double temp, String unit) {
-    if (unit == 'Celsius') {
-      return (temp * 9/5) + 32;
+  void _initializeControllers() {
+    controllers = [
+      baselineValueController,
+      accelerationsController,
+      fetalMovementController,
+      uterineContractionsController,
+      lightDecelerationsController,
+      severeDecelerationsController,
+      prolongedDecelerationsController,
+      abnormalShortTermController,
+      meanShortTermController,
+      abnormalLongTermController,
+      meanLongTermController,
+      histogramWidthController,
+      histogramMinController,
+      histogramMaxController,
+      histogramPeaksController,
+    ];
+
+    // Assign controllers to feature data
+    for (int i = 0; i < ctgFeatures.length; i++) {
+      ctgFeatures[i]['controller'] = controllers[i];
     }
-    return temp; // Already in Fahrenheit
   }
 
   Future<void> _predictAndSave() async {
-    // Validate inputs
     if (!_validateInputs()) {
       return;
     }
@@ -59,13 +197,13 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
 
     while (retryCount < maxRetries) {
       try {
-        final url = Uri.parse('${ApiContants.baseUrl}/predict_maternal');
+        final url = Uri.parse('${ApiContants.baseUrl}/predict_fetal');
         final session = _authService.currentSession;
         final token = session?.accessToken;
 
-        // Convert temperature to Fahrenheit
-        double tempInCelsius = double.tryParse(bodyTempController.text) ?? 0.0;
-        double tempInFahrenheit = _convertToFahrenheit(tempInCelsius, _selectedTempUnit);
+        final List<double> features = controllers
+            .map((controller) => double.tryParse(controller.text) ?? 0.0)
+            .toList();
 
         final response = await http
             .post(
@@ -76,12 +214,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                 'Connection': 'keep-alive',
               },
               body: jsonEncode({
-                "age": double.tryParse(ageController.text) ?? 0.0,
-                "systolic_bp": double.tryParse(systolicBPController.text) ?? 0.0,
-                "diastolic_bp": double.tryParse(diastolicBPController.text) ?? 0.0,
-                "blood_glucose": double.tryParse(bloodGlucoseController.text) ?? 0.0,
-                "body_temp": tempInFahrenheit,
-                "heart_rate": double.tryParse(heartRateController.text) ?? 0.0,
+                "features": features,
               }),
             )
             .timeout(Duration(seconds: 30));
@@ -89,50 +222,19 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
         if (response.statusCode == 200) {
           final Map<String, dynamic> data = jsonDecode(response.body);
           
-          // Add debug logging
-          log('API Response: ${response.body}');
+          log('CTG API Response: ${response.body}');
           log('Prediction: ${data['prediction']}');
           
-          if (data.containsKey('prediction')) {
-            String result = data['prediction']?.toString() ?? 'Unknown';
+          if (data.containsKey('prediction') && data.containsKey('status')) {
+            int prediction = data['prediction'];
+            String status = data['status'];
             
-            // Map string prediction to numeric values
-            Map<String, int> predictionMapping = {
-              'Normal': 0,
-              'Suspect': 1,
-              'Pathological': 2,
-            };
-            
-            int numericResult = predictionMapping[result] ?? 0;
-            
-            // Get current user ID for UID field
-            final userId = _authService.currentUser?.id;
-            
-            if (userId != null) {
-              await supabase.from('vitals').insert({
-                "UID": userId,
-                "systolic_bp": double.tryParse(systolicBPController.text) ?? 0.0,
-                "diastolic_bp": double.tryParse(diastolicBPController.text) ?? 0.0,
-                "blood_glucose": double.tryParse(bloodGlucoseController.text) ?? 0.0,
-                "body_temp": tempInFahrenheit,
-                "heart_rate": double.tryParse(heartRateController.text) ?? 0.0,
-                "prediction": numericResult,
-                "created_at": DateTime.now().toIso8601String(),
-              });
-
-              setState(() {
-                _prediction = "Predicted Risk Level: $result";
-                _previousSubmissions = _fetchPreviousSubmissions();
-                _isLoading = false;
-              });
-              return;
-            } else {
-              setState(() {
-                _prediction = "Error: User not authenticated";
-                _isLoading = false;
-              });
-              return;
-            }
+            setState(() {
+              _prediction = "Fetal Health Status: $status";
+              _previousSubmissions = _fetchPreviousSubmissions();
+              _isLoading = false;
+            });
+            return;
           } else {
             setState(() {
               _prediction = "Error: Invalid response format";
@@ -159,7 +261,6 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
           return;
         }
 
-        // Wait before retrying
         await Future.delayed(Duration(seconds: 2 * retryCount));
       } catch (e) {
         setState(() {
@@ -177,31 +278,17 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
   }
 
   bool _validateInputs() {
-    if (ageController.text.isEmpty ||
-        systolicBPController.text.isEmpty ||
-        diastolicBPController.text.isEmpty ||
-        bloodGlucoseController.text.isEmpty ||
-        bodyTempController.text.isEmpty ||
-        heartRateController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please fill all fields'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return false;
+    for (int i = 0; i < controllers.length; i++) {
+      if (controllers[i].text.isEmpty) {
+        _showValidationError('Please fill all fields');
+        return false;
+      }
     }
 
-    // Additional validation for reasonable ranges
-    double? age = double.tryParse(ageController.text);
-    if (age == null || age < 10 || age > 60) {
-      _showValidationError('Age should be between 10-60 years');
-      return false;
-    }
-
-    double? systolic = double.tryParse(systolicBPController.text);
-    if (systolic == null || systolic < 70 || systolic > 300) {
-      _showValidationError('Systolic BP should be between 70-300 mmHg');
+    // Additional validation for CTG ranges
+    double? baseline = double.tryParse(baselineValueController.text);
+    if (baseline == null || baseline < 50 || baseline > 200) {
+      _showValidationError('Baseline value should be between 50-200 bpm');
       return false;
     }
 
@@ -224,7 +311,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
     }
 
     final response = await supabase
-        .from('vitals')
+        .from('ctg')
         .select("*")
         .eq('UID', userId)
         .order('created_at', ascending: false);
@@ -242,8 +329,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
     required TextEditingController controller,
     required IconData icon,
     required String hint,
-    String? suffix,
-    Widget? suffixWidget,
+    required String suffix,
   }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -282,7 +368,6 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
             size: 20,
           ),
           suffixText: suffix,
-          suffix: suffixWidget,
           suffixStyle: TextStyle(
             color: AppPallete.textColor.withOpacity(0.7),
             fontSize: 12,
@@ -316,103 +401,20 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
     );
   }
 
-  Widget _buildTemperatureField() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: bodyTempController,
-        keyboardType: TextInputType.number,
-        style: TextStyle(
-          color: AppPallete.textColor,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        decoration: InputDecoration(
-          labelText: 'Body Temperature',
-          hintText: _selectedTempUnit == 'Celsius' ? '36.5' : '98.6',
-          labelStyle: TextStyle(
-            color: AppPallete.textColor.withOpacity(0.8),
-            fontSize: 14,
-          ),
-          hintStyle: TextStyle(
-            color: AppPallete.textColor.withOpacity(0.5),
-            fontSize: 14,
-          ),
-          prefixIcon: Icon(
-            Icons.thermostat,
-            color: Colors.pinkAccent,
-            size: 20,
-          ),
-          suffix: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              color: Colors.pinkAccent.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: DropdownButton<String>(
-              value: _selectedTempUnit,
-              underline: SizedBox(),
-              icon: Icon(Icons.arrow_drop_down, color: Colors.pinkAccent, size: 16),
-              style: TextStyle(color: AppPallete.textColor, fontSize: 12),
-              items: ['Celsius', 'Fahrenheit'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value == 'Celsius' ? '°C' : '°F'),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedTempUnit = newValue!;
-                });
-              },
-            ),
-          ),
-          filled: true,
-          fillColor: AppPallete.backgroundColor.withOpacity(0.8),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.grey.withOpacity(0.3),
-              width: 1.5,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.pinkAccent,
-              width: 2.5,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTable(List<Map<String, dynamic>> vitals) {
-    Map<int, String> riskMapping = {
-      0: "Normal",
-      1: "Suspect",
-      2: "Pathological"
+  Widget _buildTable(List<Map<String, dynamic>> ctgData) {
+    Map<int, String> healthMapping = {
+      1: "Normal",
+      2: "Suspect",
+      3: "Pathological"
     };
 
-    Map<int, Color> riskColors = {
-      0: Colors.green,
-      1: Colors.orange,
-      2: Colors.red,
+    Map<int, Color> healthColors = {
+      1: Colors.green,
+      2: Colors.orange,
+      3: Colors.red,
     };
 
-    if (vitals.isEmpty) {
+    if (ctgData.isEmpty) {
       return Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -425,14 +427,14 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
             Icon(Icons.history, color: Colors.grey, size: 48),
             SizedBox(height: 12),
             Text(
-              'No previous submissions found',
+              'No previous CTG analyses found',
               style: TextStyle(
                 color: AppPallete.textColor.withOpacity(0.7),
                 fontSize: 16,
               ),
             ),
             Text(
-              'Your pregnancy risk assessments will appear here',
+              'Your fetal health assessments will appear here',
               style: TextStyle(
                 color: AppPallete.textColor.withOpacity(0.5),
                 fontSize: 12,
@@ -479,7 +481,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
               ),
               DataColumn(
                 label: Text(
-                  'Sys BP\n(mmHg)',
+                  'Baseline\n(bpm)',
                   style: TextStyle(
                     color: Colors.pinkAccent,
                     fontWeight: FontWeight.bold,
@@ -490,7 +492,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
               ),
               DataColumn(
                 label: Text(
-                  'Dia BP\n(mmHg)',
+                  'Accelerations\n(/hr)',
                   style: TextStyle(
                     color: Colors.pinkAccent,
                     fontWeight: FontWeight.bold,
@@ -501,7 +503,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
               ),
               DataColumn(
                 label: Text(
-                  'Glucose\n(mg/dL)',
+                  'Movements\n(count)',
                   style: TextStyle(
                     color: Colors.pinkAccent,
                     fontWeight: FontWeight.bold,
@@ -512,29 +514,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
               ),
               DataColumn(
                 label: Text(
-                  'Temp\n(°F)',
-                  style: TextStyle(
-                    color: Colors.pinkAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              DataColumn(
-                label: Text(
-                  'HR\n(bpm)',
-                  style: TextStyle(
-                    color: Colors.pinkAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              DataColumn(
-                label: Text(
-                  'Risk Level',
+                  'Health Status',
                   style: TextStyle(
                     color: Colors.pinkAccent,
                     fontWeight: FontWeight.bold,
@@ -543,43 +523,31 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                 ),
               ),
             ],
-            rows: vitals.take(10).map((vital) {
-              int prediction = vital['prediction'] ?? 0;
+            rows: ctgData.take(10).map((data) {
+              int prediction = data['prediction'] ?? 1;
               return DataRow(
                 cells: [
                   DataCell(
                     Text(
-                      formatDate(vital['created_at'].toString()),
+                      formatDate(data['created_at'].toString()),
                       style: TextStyle(color: Colors.black87, fontSize: 11),
                     ),
                   ),
                   DataCell(
                     Text(
-                      vital['systolic_bp'].toString(),
+                      data['baseline_value']?.toString() ?? 'N/A',
                       style: TextStyle(color: Colors.black87, fontSize: 12),
                     ),
                   ),
                   DataCell(
                     Text(
-                      vital['diastolic_bp'].toString(),
+                      data['accelerations']?.toString() ?? 'N/A',
                       style: TextStyle(color: Colors.black87, fontSize: 12),
                     ),
                   ),
                   DataCell(
                     Text(
-                      vital['blood_glucose'].toString(),
-                      style: TextStyle(color: Colors.black87, fontSize: 12),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      vital['body_temp'].toStringAsFixed(1),
-                      style: TextStyle(color: Colors.black87, fontSize: 12),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      vital['heart_rate'].toString(),
+                      data['fetal_movement']?.toString() ?? 'N/A',
                       style: TextStyle(color: Colors.black87, fontSize: 12),
                     ),
                   ),
@@ -587,17 +555,17 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: riskColors[prediction]?.withOpacity(0.2),
+                        color: healthColors[prediction]?.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: riskColors[prediction] ?? Colors.grey,
+                          color: healthColors[prediction] ?? Colors.grey,
                           width: 1,
                         ),
                       ),
                       child: Text(
-                        riskMapping[prediction] ?? vital['prediction'].toString(),
+                        healthMapping[prediction] ?? data['prediction'].toString(),
                         style: TextStyle(
-                          color: riskColors[prediction] ?? Colors.black,
+                          color: healthColors[prediction] ?? Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 11,
                         ),
@@ -619,7 +587,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
       backgroundColor: AppPallete.backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Pregnancy Risk Assessment',
+          'CTG Analysis',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -628,15 +596,6 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
         centerTitle: true,
         backgroundColor: Colors.pinkAccent,
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.pinkAccent, Colors.pink.shade400],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -655,7 +614,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.pinkAccent.withOpacity(0.1), Colors.pink.withOpacity(0.05)],
+                    colors: [Colors.pinkAccent.withOpacity(0.1), Colors.blue.withOpacity(0.05)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -664,14 +623,14 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.health_and_safety, color: Colors.pinkAccent, size: 28),
+                    Icon(Icons.monitor_heart, color: Colors.pinkAccent, size: 28),
                     SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Health Vitals Input',
+                            'Fetal CTG Analysis',
                             style: TextStyle(
                               color: AppPallete.textColor,
                               fontSize: 18,
@@ -679,7 +638,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                             ),
                           ),
                           Text(
-                            'Please enter your current health measurements',
+                            'Enter CTG measurements for fetal health assessment',
                             style: TextStyle(
                               color: AppPallete.textColor.withOpacity(0.7),
                               fontSize: 12,
@@ -692,62 +651,28 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                 ),
               ),
               SizedBox(height: 24),
-        
+
               // Input fields
-              _buildTextField(
-                label: 'Age',
-                controller: ageController,
-                icon: Icons.cake,
-                hint: 'Enter your age',
-                suffix: 'years',
-              ),
-              _buildTextField(
-                label: 'Systolic Blood Pressure',
-                controller: systolicBPController,
-                icon: Icons.favorite,
-                hint: 'Normal: 90-120',
-                suffix: 'mmHg',
-              ),
-              _buildTextField(
-                label: 'Diastolic Blood Pressure',
-                controller: diastolicBPController,
-                icon: Icons.favorite_border,
-                hint: 'Normal: 60-80',
-                suffix: 'mmHg',
-              ),
-              _buildTextField(
-                label: 'Blood Glucose Level',
-                controller: bloodGlucoseController,
-                icon: Icons.water_drop,
-                hint: 'Normal: 70-100',
-                suffix: 'mg/dL',
-              ),
-              _buildTemperatureField(),
-              _buildTextField(
-                label: 'Heart Rate',
-                controller: heartRateController,
-                icon: Icons.monitor_heart,
-                hint: 'Normal: 60-100',
-                suffix: 'bpm',
-              ),
-        
+              ...ctgFeatures.map((feature) => _buildTextField(
+                    label: feature['label'],
+                    controller: feature['controller'],
+                    icon: feature['icon'],
+                    hint: feature['hint'],
+                    suffix: feature['suffix'],
+                  )),
+
               SizedBox(height: 32),
-        
-              // Predict button
+
+              // Analyze button
               Container(
                 width: double.infinity,
                 height: 56,
                 child: _isLoading
                     ? Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: [Colors.pinkAccent.withOpacity(0.7), Colors.pink.withOpacity(0.7)],
-                          ),
-                        ),
+                        
                         child: CustomLoader(
                           size: 30,
-                          message: "Analyzing your vitals...",
+                          message: "Analyzing CTG data...",
                           color: Colors.white,
                         ),
                       )
@@ -755,7 +680,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                         onPressed: _predictAndSave,
                         icon: Icon(Icons.analytics, color: Colors.white),
                         label: Text(
-                          'Analyze Risk Level',
+                          'Analyze Fetal Health',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -773,11 +698,12 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                         ),
                       ),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.pinkAccent, Colors.pink.shade400],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: Colors.pinkAccent,
+                  // gradient: LinearGradient(
+                  //   colors: [Colors.pinkAccent, Colors.blue.shade400],
+                  //   begin: Alignment.topLeft,
+                  //   end: Alignment.bottomRight,
+                  // ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -788,9 +714,9 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                   ],
                 ),
               ),
-        
+
               SizedBox(height: 24),
-        
+
               // Prediction result
               if (_prediction.isNotEmpty)
                 Container(
@@ -839,16 +765,16 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                     ],
                   ),
                 ),
-        
+
               SizedBox(height: 40),
-        
+
               // Previous submissions header
               Row(
                 children: [
                   Icon(Icons.history, color: Colors.pinkAccent),
                   SizedBox(width: 8),
                   Text(
-                    'Previous Assessments',
+                    'Previous CTG Analyses',
                     style: TextStyle(
                       color: AppPallete.textColor,
                       fontSize: 20,
@@ -858,7 +784,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                 ],
               ),
               SizedBox(height: 16),
-        
+
               // Previous submissions table
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: _previousSubmissions,
@@ -869,7 +795,7 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
                       child: Center(
                         child: SimpleCustomLoader(
                           size: 40,
-                          message: "Loading previous assessments...",
+                          message: "Loading previous analyses...",
                           color: AppPallete.gradient1,
                         ),
                       ),
@@ -883,5 +809,13 @@ class _PregnancyRiskScreenState extends State<PregnancyRiskScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 }

@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
+import 'package:prenova/features/BabyStatus/presentation/pregnancy_stage_screen.dart';
 import 'package:prenova/features/MedicalDocuments/medical_documents.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/Profilepage.dart';
+import 'package:prenova/features/ctg/presentation/ctg_analysis.dart';
 import 'package:prenova/features/dashboard/presentation/contraction_timer.dart';
-import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
-import 'package:prenova/features/fetal_health/presentation/fetal_health.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
 import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
 import 'package:prenova/features/chatbot/presentation/chatbot.dart';
 import 'package:prenova/features/pregnancy_diet_screen/pregnancy_diet_screen.dart';
 // import 'package:prenova/features/medical_docs/presentation/upload_docs.dart';
-import 'package:prenova/features/auth/presentation/Profilepage.dart';
 import 'package:prenova/features/doctor_cons/presentation/doctor_consultation.dart';
-import 'package:prenova/features/dashboard/presentation/contraction_timer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -58,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'icon': LucideIcons.baby,
         'onPressed': () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => PostFetalHealthScreen()));
+              MaterialPageRoute(builder: (context) => CTGAnalysisScreen()));
         }
       },
       {
@@ -84,9 +82,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ContractionTrackerScreen()));
+                  builder: (context) =>ContractionTrackerScreen()));
         }
       },
+      {
+        'title': 'Pregnancy Journey',
+        'icon': LucideIcons.calendar,
+        'onPressed': () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PregnancyStagesScreen()));
+        }
+      },
+      
     ];
 
     final List<Widget> bottomNavScreens = [

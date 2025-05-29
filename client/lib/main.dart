@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:prenova/core/theme/app_theme.dart';
-// import 'package:prenova/features/auth/presentation/Registerpage.dart';
-// import 'package:prenova/features/auth/presentation/loginpage.dart';
-// import 'package:prenova/features/auth/presentation/welcome_pg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:prenova/features/auth/auth_gate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName:".env");
+  String url = dotenv.env['SUPABASE_URL'] ?? '';
+  String anonKey = dotenv.env['SUPABASE_KEY'] ?? '';
   try {
     await Supabase.initialize(
-      url: 'https://xgfvhqskjdgcfynnbpky.supabase.co',
-      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnZnZocXNramRnY2Z5bm5icGt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkxNjUwNzcsImV4cCI6MjA1NDc0MTA3N30.j61xNNnCtK_Kqv3_m1nQLj0Fdxn8gsV7kNGkJTXil6o',
+      url: url,
+      anonKey: anonKey,
       debug: true,
     );
   } catch (e) {
