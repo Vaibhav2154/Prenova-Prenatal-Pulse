@@ -135,7 +135,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  int _currentIndex = 0;
+  int _currentIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final List<Widget> bottomNavScreens = [
       PregnancyChatScreen(),
       PregnancyDietScreen(),
+      DashboardScreen(),
       PregnancyStagesScreen(),
       ServicesHub(),
     ];
@@ -412,6 +413,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                   child: Icon(LucideIcons.utensils, size: 24),
                 ),
                 label: 'Diet Plan',
+              ),
+              BottomNavigationBarItem(
+                icon: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: _currentIndex == 1
+                        ? AppPallete.gradient1.withOpacity(0.1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(LucideIcons.home, size: 24),
+                ),
+                label: 'Home',
               ),
               BottomNavigationBarItem(
                 icon: Container(
