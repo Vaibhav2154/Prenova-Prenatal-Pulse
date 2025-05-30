@@ -218,7 +218,7 @@ class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
               }),
             )
             .timeout(Duration(seconds: 30));
-
+        
         if (response.statusCode == 200) {
           final Map<String, dynamic> data = jsonDecode(response.body);
           
@@ -236,6 +236,7 @@ class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
             });
             return;
           } else {
+            
             setState(() {
               _prediction = "Error: Invalid response format";
               _isLoading = false;
@@ -243,6 +244,7 @@ class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
             return;
           }
         } else {
+          log(response.body.toString());
           setState(() {
             _prediction = "Error: ${response.statusCode}";
             _isLoading = false;
@@ -402,16 +404,17 @@ class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
   }
 
   Widget _buildTable(List<Map<String, dynamic>> ctgData) {
+    // CORRECTED MAPPING
     Map<int, String> healthMapping = {
-      1: "Normal",
-      2: "Suspect",
-      3: "Pathological"
+      0: "Normal",      // Changed from 1 to 0
+      1: "Suspect",     // Changed from 2 to 1  
+      2: "Pathological" // Changed from 3 to 2
     };
 
     Map<int, Color> healthColors = {
-      1: Colors.green,
-      2: Colors.orange,
-      3: Colors.red,
+      0: Colors.green,   // Changed from 1 to 0
+      1: Colors.orange,  // Changed from 2 to 1
+      2: Colors.red,     // Changed from 3 to 2
     };
 
     if (ctgData.isEmpty) {
@@ -670,9 +673,9 @@ class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
                 child: _isLoading
                     ? Container(
                         
-                        child: CustomLoader(
-                          size: 30,
-                          message: "Analyzing CTG data...",
+                        child: CircularProgressIndicator(
+                          // size: 30,
+                          // message: "Analyzing CTG data...",
                           color: Colors.white,
                         ),
                       )
@@ -727,14 +730,18 @@ class _CTGAnalysisScreenState extends State<CTGAnalysisScreen> {
                         ? Colors.green.withOpacity(0.1)
                         : _prediction.contains('Suspect')
                             ? Colors.orange.withOpacity(0.1)
-                            : Colors.red.withOpacity(0.1),
+                            : _prediction.contains('Error')
+                                ? Colors.red.withOpacity(0.1)
+                                : Colors.red.withOpacity(0.1), // For Pathological
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: _prediction.contains('Normal')
                           ? Colors.green
                           : _prediction.contains('Suspect')
                               ? Colors.orange
-                              : Colors.red,
+                              : _prediction.contains('Error')
+                                  ? Colors.red
+                                  : Colors.red, // For Pathological
                     ),
                   ),
                   child: Column(
