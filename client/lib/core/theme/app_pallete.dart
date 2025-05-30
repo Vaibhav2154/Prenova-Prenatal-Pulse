@@ -12,8 +12,9 @@ class AppPallete {
   static const fadeprimary = Color(0xFFfb6fa9);
   static const gradient1 = Colors.pinkAccent;
   static const primaryFgColor = Color(0xFF054185);
-  static const gradient3 = Color(0xFF643172);
-  static const gradient2 = Color(0xFFb34da5);
+  static const gradient3 = Color(0xFFfb6fa9);
+  // static const gradient3 = Color(0xFF643172);
+  static const gradient2 = Color.fromARGB(255, 233, 75, 141);
   static const accentFgColor = Color(0xFF054185);
 
 
