@@ -1,49 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
 import 'dart:async';
-import 'dart:convert';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-class KickSession {
+class ContractionSession {
   final String id;
-  final int kickCount;
   final int duration;
   final DateTime createdAt;
-  final List<FlSpot> data;
+  final DateTime startTime;
+  final DateTime endTime;
+  final double frequency;
 
-  KickSession({
+  ContractionSession({
     required this.id,
-    required this.kickCount,
     required this.duration,
     required this.createdAt,
-    required this.data,
+    required this.startTime,
+    required this.endTime,
+    required this.frequency,
   });
 }
 
-class KickTrackerScreen extends StatefulWidget {
-  const KickTrackerScreen({super.key});
+class ContractionTrackerScreen extends StatefulWidget {
+  const ContractionTrackerScreen({super.key});
 
   @override
-  State<KickTrackerScreen> createState() => _KickTrackerScreenState();
+  State<ContractionTrackerScreen> createState() =>
+      _ContractionTrackerScreenState();
 }
 
-class _KickTrackerScreenState extends State<KickTrackerScreen>
+class _ContractionTrackerScreenState extends State<ContractionTrackerScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   final _supabase = Supabase.instance.client;
-  List<KickSession> _sessions = [];
-  final List<FlSpot> _currentData = [];
+  List<ContractionSession> _sessions = [];
   Timer? _timer;
-  var _elapsedSeconds = 0;
-  var _kickCount = 0;
-  var _isTracking = false;
+  var _duration = 0;
+  double _frequency = 0.0;
+  DateTime? _startTime;
+  DateTime? _lastEndTime;
+  var _isActive = false;
   var _sessionId = '';
   var _isButtonDisabled = false;
 
-  late AnimationController _kickController;
+  late AnimationController _pulseController;
   late AnimationController _fadeController;
-  late Animation<double> _kickAnimation;
+  late Animation<double> _pulseAnimation;
   late Animation<double> _fadeAnimation;
 
   @override
@@ -51,8 +56,8 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     
-    _kickController = AnimationController(
-      duration: Duration(milliseconds: 800),
+    _pulseController = AnimationController(
+      duration: Duration(milliseconds: 1500),
       vsync: this,
     );
     _fadeController = AnimationController(
@@ -60,8 +65,8 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
       vsync: this,
     );
     
-    _kickAnimation = Tween<double>(begin: 1.0, end: 1.3).animate(
-      CurvedAnimation(parent: _kickController, curve: Curves.elasticOut),
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
@@ -75,7 +80,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
-    _kickController.dispose();
+    _pulseController.dispose();
     _fadeController.dispose();
     super.dispose();
   }
@@ -83,110 +88,144 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
   Future<void> _loadSessions() async {
     try {
       final response = await _supabase
-          .from('kick_sessions')
+          .from('contraction_sessions')
           .select()
-          .order('created_at', ascending: false);
+          .order('start_time', ascending: false);
 
-      final sessions = (response as List)
-          .map((session) => KickSession(
-                id: session['session_id'],
-                kickCount: session['kick_count'],
-                duration: session['elapsed_seconds'],
-                createdAt: DateTime.parse(session['created_at']),
-                data: _parseChartData(session['kick_data'] is String
-                    ? List<Map<String, dynamic>>.from(jsonDecode(session['kick_data']))
-                    : session['kick_data']),
-              ))
-          .toList();
+      final sessions = (response as List).map((session) {
+        return ContractionSession(
+          id: session['session_id'],
+          duration: session['duration'],
+          createdAt: DateTime.parse(session['created_at']),
+          startTime: DateTime.parse(session['start_time']),
+          endTime: DateTime.parse(session['end_time']),
+          frequency: (session['frequency'] as num).toDouble(),
+        );
+      }).toList();
 
-      if (mounted) setState(() => _sessions = sessions);
+      if (mounted) {
+        setState(() {
+          _sessions = sessions;
+          _lastEndTime = sessions.isNotEmpty ? sessions.first.endTime : null;
+        });
+      }
+    } on PlatformException catch (e) {
+      _showError('Network error: ${e.message}');
     } catch (e) {
       _showError('Failed to load sessions: ${e.toString()}');
     }
   }
 
-  List<FlSpot> _parseChartData(List<dynamic> data) {
-    return data
-        .map<FlSpot>((point) => FlSpot(point['x'].toDouble(), point['y'].toDouble()))
-        .toList();
-  }
-
   Future<void> _saveSession() async {
     try {
-      await _supabase.from('kick_sessions').upsert({
+      final endTime = DateTime.now();
+      
+      await _supabase.from('contraction_sessions').insert({
         'session_id': _sessionId,
-        'kick_count': _kickCount,
-        'elapsed_seconds': _elapsedSeconds,
-        'kick_data': jsonEncode(_currentData.map((p) => {'x': p.x, 'y': p.y}).toList()),
-        'created_at': DateTime.now().toIso8601String(),
+        'duration': _duration,
+        'start_time': _startTime!.toUtc().toIso8601String(),
+        'end_time': endTime.toUtc().toIso8601String(),
+        'frequency': _frequency,
+        'created_at': DateTime.now().toUtc().toIso8601String(),
       });
-      await _loadSessions();
+
+      if (mounted) {
+        setState(() {
+          _sessions.insert(0, ContractionSession(
+            id: _sessionId,
+            duration: _duration,
+            createdAt: DateTime.now(),
+            startTime: _startTime!,
+            endTime: endTime,
+            frequency: _frequency,
+          ));
+          _lastEndTime = endTime;
+        });
+      }
+
+    } on PostgrestException catch (e) {
+      _showError('Database error: ${e.message}');
+      throw Exception('Database operation failed');
     } catch (e) {
       _showError('Failed to save session: ${e.toString()}');
+      throw Exception('Save operation failed');
     }
   }
 
-  void _startTracking() {
+  void _startContraction() {
+    if (_isActive) return;
+
+    final now = DateTime.now();
     setState(() {
-      _isTracking = true;
-      _resetCounters();
-      _sessionId = DateTime.now().toIso8601String();
+      _isActive = true;
+      _startTime = now;
+      _sessionId = 'session_${now.microsecondsSinceEpoch}';
+      _duration = 0;
+    });
+
+    _pulseController.repeat(reverse: true);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_lastEndTime != null) {
+        final difference = now.difference(_lastEndTime!);
+        setState(() => _frequency = difference.inSeconds / 60);
+      } else {
+        setState(() => _frequency = 0.0);
+      }
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        _elapsedSeconds++;
-        _currentData.add(FlSpot(_elapsedSeconds.toDouble(), _kickCount.toDouble()));
-      });
+      if (mounted) setState(() => _duration++);
     });
   }
 
-  void _stopTracking() async {
+  void _stopContraction() async {
     _timer?.cancel();
-    setState(() => _isTracking = false);
-    await _saveSession();
-  }
+    _pulseController.stop();
+    setState(() {
+      _isActive = false;
+      _isButtonDisabled = true;
+    });
 
-  void _recordKick() {
-    if (_isTracking && !_isButtonDisabled) {
-      setState(() {
-        _kickCount++;
-        _isButtonDisabled = true;
-      });
-      
-      _kickController.forward().then((_) => _kickController.reverse());
-      
-      Timer(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() => _isButtonDisabled = false);
-        }
+    try {
+      await _saveSession();
+      _resetCounters();
+    } catch (e) {
+      _showError('Failed to save session. Please check your connection.');
+    } finally {
+      Timer(const Duration(seconds: 2), () {
+        if (mounted) setState(() => _isButtonDisabled = false);
       });
     }
   }
 
   void _resetCounters() {
-    _elapsedSeconds = 0;
-    _kickCount = 0;
-    _currentData.clear();
-    _isButtonDisabled = false;
+    if (mounted) {
+      setState(() {
+        _duration = 0;
+        _frequency = 0.0;
+      });
+    }
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(LucideIcons.alertCircle, color: Colors.white),
-            SizedBox(width: 12),
-            Expanded(child: Text(message)),
-          ],
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(LucideIcons.alertCircle, color: Colors.white),
+              SizedBox(width: 12),
+              Expanded(child: Text(message)),
+            ],
+          ),
+          backgroundColor: AppPallete.errorColor,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: EdgeInsets.all(16),
         ),
-        backgroundColor: AppPallete.errorColor,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: EdgeInsets.all(16),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -195,7 +234,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
       backgroundColor: AppPallete.backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Baby Kick Tracker',
+          'Contraction Timer',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -208,14 +247,14 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.pink[400]!, Colors.pink[600]!],
+              colors: [AppPallete.gradient1, AppPallete.gradient2],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
             boxShadow: [
               BoxShadow(
-                color: Colors.pink.withOpacity(0.3),
+                color: AppPallete.gradient1.withOpacity(0.3),
                 blurRadius: 20,
                 offset: Offset(0, 8),
               ),
@@ -231,13 +270,13 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
           child: Column(
             children: [
               SizedBox(height: 20),
-              _buildMainKickCard(),
+              _buildMainTimerCard(),
               SizedBox(height: 24),
               _buildStatsRow(),
               SizedBox(height: 24),
               _buildChart(),
               SizedBox(height: 24),
-              _buildSessionHistory(),
+              _buildHistory(),
             ],
           ),
         ),
@@ -245,14 +284,14 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     );
   }
 
-  Widget _buildMainKickCard() {
+  Widget _buildMainTimerCard() {
     return Container(
       padding: EdgeInsets.all(32),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            _isTracking ? Colors.pink[400]! : Colors.white,
-            _isTracking ? Colors.pink[600]! : Colors.grey[50]!,
+            _isActive ? AppPallete.gradient1 : Colors.white,
+            _isActive ? AppPallete.gradient2 : Colors.grey[50]!,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -260,8 +299,8 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: _isTracking 
-                ? Colors.pink.withOpacity(0.3)
+            color: _isActive 
+                ? AppPallete.gradient1.withOpacity(0.3)
                 : Colors.black.withOpacity(0.08),
             blurRadius: 20,
             offset: Offset(0, 8),
@@ -270,140 +309,79 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
       ),
       child: Column(
         children: [
-          Text(
-            'Current Session',
-            style: TextStyle(
-              fontSize: 16,
-              color: _isTracking ? Colors.white.withOpacity(0.9) : AppPallete.textColor.withOpacity(0.7),
-              fontWeight: FontWeight.w500,
+          AnimatedBuilder(
+            animation: _pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _isActive ? _pulseAnimation.value : 1.0,
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: _isActive ? Colors.white.withOpacity(0.2) : AppPallete.gradient1.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _isActive ? Colors.white : AppPallete.gradient1,
+                      width: 3,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${(_duration ~/ 60).toString().padLeft(2, '0')}:${(_duration % 60).toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: _isActive ? Colors.white : AppPallete.textColor,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          SizedBox(height: 24),
+          Container(
+            width: double.infinity,
+            height: 60,
+            child: ElevatedButton.icon(
+              icon: Icon(
+                _isActive ? LucideIcons.square : LucideIcons.play,
+                size: 24,
+                color: Colors.white,
+              ),
+              label: Text(
+                _isActive ? 'END CONTRACTION' : 'START CONTRACTION',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _isButtonDisabled
+                    ? AppPallete.greyColor
+                    : (_isActive ? Colors.red[600] : AppPallete.gradient1),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                shadowColor: _isActive 
+                    ? Colors.red.withOpacity(0.3)
+                    : AppPallete.gradient1.withOpacity(0.3),
+              ),
+              onPressed: _isButtonDisabled
+                  ? null
+                  : (_isActive ? _stopContraction : _startContraction),
             ),
           ),
           SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    '${(_elapsedSeconds ~/ 60).toString().padLeft(2, '0')}:${(_elapsedSeconds % 60).toString().padLeft(2, '0')}',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: _isTracking ? Colors.white : AppPallete.textColor,
-                    ),
-                  ),
-                  Text(
-                    'Time',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: _isTracking ? Colors.white.withOpacity(0.8) : AppPallete.textColor.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                width: 2,
-                height: 40,
-                color: _isTracking ? Colors.white.withOpacity(0.3) : AppPallete.textColor.withOpacity(0.2),
-              ),
-              Column(
-                children: [
-                  AnimatedBuilder(
-                    animation: _kickAnimation,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: _kickAnimation.value,
-                        child: Text(
-                          '$_kickCount',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: _isTracking ? Colors.white : Colors.pink[600],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  Text(
-                    'Kicks',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: _isTracking ? Colors.white.withOpacity(0.8) : AppPallete.textColor.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 32),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 56,
-                  child: ElevatedButton.icon(
-                    icon: Icon(
-                      _isTracking ? LucideIcons.square : LucideIcons.play,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      _isTracking ? 'STOP' : 'START',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isTracking ? Colors.red[600] : Colors.green[600],
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    onPressed: _isTracking ? _stopTracking : _startTracking,
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Container(
-                width: 70,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _isButtonDisabled || !_isTracking ? null : _recordKick,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isButtonDisabled 
-                        ? Colors.pink.withOpacity(0.5)
-                        : Colors.pink[600],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: AnimatedBuilder(
-                    animation: _kickAnimation,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: _kickAnimation.value,
-                        child: Icon(
-                          LucideIcons.heart,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
           Text(
-            _isTracking
-                ? 'Tap the heart when you feel a kick!'
-                : 'Start tracking to record baby movements',
+            _isActive
+                ? 'Contraction in progress... Stay calm and breathe'
+                : 'Press start when contraction begins',
             style: TextStyle(
-              color: _isTracking ? Colors.white.withOpacity(0.9) : AppPallete.textColor.withOpacity(0.7),
+              color: _isActive ? Colors.white.withOpacity(0.9) : AppPallete.textColor.withOpacity(0.7),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -417,11 +395,12 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
   Widget _buildStatsRow() {
     return Row(
       children: [
-        Expanded(child: _StatCard(LucideIcons.timer, 'Duration', '$_elapsedSeconds s', Colors.blue[600]!)),
+        Expanded(child: _StatCard(LucideIcons.timer, 'Duration', '$_duration s', AppPallete.gradient1)),
         SizedBox(width: 16),
-        Expanded(child: _StatCard(LucideIcons.heart, 'Kicks', '$_kickCount', Colors.pink[600]!)),
+        Expanded(child: _StatCard(LucideIcons.repeat, 'Frequency', 
+            _frequency > 0 ? '${_frequency.toStringAsFixed(1)} min' : '-', AppPallete.gradient2)),
         SizedBox(width: 16),
-        Expanded(child: _StatCard(LucideIcons.activity, 'Sessions', '${_sessions.length}', Colors.purple[600]!)),
+        Expanded(child: _StatCard(LucideIcons.activity, 'Sessions', '${_sessions.length}', AppPallete.gradient3)),
       ],
     );
   }
@@ -446,10 +425,10 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
         children: [
           Row(
             children: [
-              Icon(LucideIcons.trendingUp, color: Colors.pink[600], size: 20),
+              Icon(LucideIcons.trendingUp, color: AppPallete.gradient1, size: 20),
               SizedBox(width: 8),
               Text(
-                'Kick Activity',
+                'Contraction Pattern',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -463,17 +442,18 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
             child: LineChart(
               LineChartData(
                 minX: 0,
-                maxX: _elapsedSeconds.toDouble(),
+                maxX: _sessions.length.toDouble(),
                 minY: 0,
-                maxY: (_kickCount.toDouble() + 5).clamp(0.0, double.infinity),
+                maxY: _sessions.isEmpty ? 100 : _sessions
+                        .fold(0, (max, session) => session.duration > max ? session.duration : max)
+                        .toDouble() + 20,
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 30,
-                      interval: 60,
                       getTitlesWidget: (value, meta) => Text(
-                        '${value.toInt()}s',
+                        '${value.toInt() + 1}',
                         style: TextStyle(color: AppPallete.textColor.withOpacity(0.7), fontSize: 12),
                       ),
                     ),
@@ -482,9 +462,9 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 40,
-                      interval: 5,
+                      interval: 30,
                       getTitlesWidget: (value, meta) => Text(
-                        value.toInt().toString(),
+                        '${value.toInt()}s',
                         style: TextStyle(color: AppPallete.textColor.withOpacity(0.7), fontSize: 12),
                       ),
                     ),
@@ -503,16 +483,22 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
                   LineChartBarData(
-                    spots: _currentData.isEmpty ? [FlSpot(0, 0)] : _currentData,
+                    spots: _sessions.isEmpty 
+                        ? [FlSpot(0, 0)]
+                        : _sessions
+                            .asMap()
+                            .entries
+                            .map((e) => FlSpot(e.key.toDouble(), e.value.duration.toDouble()))
+                            .toList(),
                     isCurved: true,
-                    color: Colors.pink[600],
+                    color: AppPallete.gradient1,
                     barWidth: 3,
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                         radius: 4,
-                        color: Colors.pink[600]!,
+                        color: AppPallete.gradient1,
                         strokeWidth: 2,
                         strokeColor: Colors.white,
                       ),
@@ -521,8 +507,8 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          Colors.pink.withOpacity(0.3),
-                          Colors.pink.withOpacity(0.1),
+                          AppPallete.gradient1.withOpacity(0.3),
+                          AppPallete.gradient1.withOpacity(0.1),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -538,7 +524,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
     );
   }
 
-  Widget _buildSessionHistory() {
+  Widget _buildHistory() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -558,10 +544,10 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
             padding: EdgeInsets.all(20),
             child: Row(
               children: [
-                Icon(LucideIcons.history, color: Colors.pink[600], size: 20),
+                Icon(LucideIcons.clock, color: AppPallete.gradient1, size: 20),
                 SizedBox(width: 8),
                 Text(
-                  'Session History',
+                  'Recent Sessions',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -578,10 +564,10 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(LucideIcons.heart, size: 48, color: Colors.grey[400]),
+                        Icon(LucideIcons.clock, size: 48, color: Colors.grey[400]),
                         SizedBox(height: 16),
                         Text(
-                          'No kick sessions recorded yet',
+                          'No contractions recorded yet',
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 16,
@@ -607,12 +593,12 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                             Container(
                               padding: EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.pink.withOpacity(0.1),
+                                color: AppPallete.gradient1.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Icon(
-                                LucideIcons.heart,
-                                color: Colors.pink[600],
+                                LucideIcons.activity,
+                                color: AppPallete.gradient1,
                                 size: 20,
                               ),
                             ),
@@ -622,7 +608,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Session ${index + 1}',
+                                    'Contraction ${index + 1}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: AppPallete.textColor,
@@ -631,7 +617,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    '${session.kickCount} kicks in ${session.duration}s',
+                                    'Duration: ${session.duration}s • Frequency: ${session.frequency.toStringAsFixed(1)} min',
                                     style: TextStyle(
                                       color: AppPallete.textColor.withOpacity(0.7),
                                       fontSize: 14,
@@ -641,7 +627,7 @@ class _KickTrackerScreenState extends State<KickTrackerScreen>
                               ),
                             ),
                             Text(
-                              '${session.createdAt.day}/${session.createdAt.month}/${session.createdAt.year}',
+                              DateFormat('HH:mm').format(session.startTime),
                               style: TextStyle(
                                 color: AppPallete.textColor.withOpacity(0.6),
                                 fontSize: 12,
