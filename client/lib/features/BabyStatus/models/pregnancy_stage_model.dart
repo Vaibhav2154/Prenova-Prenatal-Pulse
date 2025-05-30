@@ -41,4 +41,6 @@ class PregnancyStageModel {
   int get weekInMonth {
     return ((week - 1) % 4) + 1;
   }
+
+  get imageUrl => null;
 }
