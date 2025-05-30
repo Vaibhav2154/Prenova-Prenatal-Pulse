@@ -509,6 +509,270 @@ def predict_fetal():
     except Exception as e:
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
+# 
+@app.route('/diet/sessions', methods=['GET'])
+def get_diet_sessions():
+    """Get all diet sessions for the authenticated user"""
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'No valid token provided'}), 401
+        
+        token = auth_header.split(' ')[1]
+        user_data = supabase.auth.get_user(token)
+
+        if not user_data:
+            return jsonify({'error': 'Invalid token'}), 401
+
+        # Include diet_plan field in the selection
+        sessions_data = supabase.table('diet_sessions').select(
+            'id, title, trimester, weight, health_conditions, dietary_preference, diet_plan, created_at, updated_at'
+        ).eq('user_id', user_data.user.id).order('updated_at', desc=True).execute()
+
+        return jsonify(sessions_data.data), 200
+
+    except Exception as e:
+        print(f"Error fetching diet sessions: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/diet/sessions', methods=['POST'])
+def create_diet_session():
+    """Create a new diet session and generate recommendations"""
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'No valid token provided'}), 401
+        
+        token = auth_header.split(' ')[1]
+        user_data = supabase.auth.get_user(token)
+
+        if not user_data:
+            return jsonify({'error': 'Invalid token'}), 401
+
+        data = request.json
+        session_id = str(uuid.uuid4())
+        
+        print(f"Creating diet session for user: {user_data.user.id}")
+        print(f"Request data: {data}")
+        
+        # Generate structured diet plan
+        diet_plan = generate_structured_diet_plan(
+            data['trimester'],
+            data['weight'],
+            data['health_conditions'],
+            data['dietary_preference']
+        )
+        
+        print(f"Generated diet plan: {len(diet_plan.get('meal_plans', []))} meal plans, {len(diet_plan.get('tips', []))} tips")
+        
+        # Create session title
+        title = f"{data['trimester']} Trimester - {data['weight']}kg"
+        
+        # Create new session
+        session_data = {
+            'id': session_id,
+            'user_id': user_data.user.id,
+            'title': title,
+            'trimester': data['trimester'],
+            'weight': data['weight'],
+            'health_conditions': data['health_conditions'],
+            'dietary_preference': data['dietary_preference'],
+            'diet_plan': diet_plan,
+            'created_at': datetime.utcnow().isoformat(),
+            'updated_at': datetime.utcnow().isoformat()
+        }
+
+        result = supabase.table('diet_sessions').insert(session_data).execute()
+        print(f"Successfully created diet session: {session_id}")
+        
+        return jsonify(result.data[0]), 201
+
+    except Exception as e:
+        print(f"Error creating diet session: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/diet/sessions/<session_id>', methods=['GET'])
+def get_diet_session(session_id):
+    """Get a specific diet session with its recommendations"""
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'No valid token provided'}), 401
+        
+        token = auth_header.split(' ')[1]
+        user_data = supabase.auth.get_user(token)
+
+        if not user_data:
+            return jsonify({'error': 'Invalid token'}), 401
+
+        # Get specific session
+        session_data = supabase.table('diet_sessions').select('*').eq(
+            'id', session_id
+        ).eq('user_id', user_data.user.id).execute()
+
+        if not session_data.data:
+            return jsonify({'error': 'Session not found'}), 404
+
+        return jsonify(session_data.data[0]), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/diet/sessions/<session_id>', methods=['DELETE'])
+def delete_diet_session(session_id):
+    """Delete a specific diet session"""
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'No valid token provided'}), 401
+        
+        token = auth_header.split(' ')[1]
+        user_data = supabase.auth.get_user(token)
+
+        if not user_data:
+            return jsonify({'error': 'Invalid token'}), 401
+
+        # Delete the session
+        result = supabase.table('diet_sessions').delete().eq(
+            'id', session_id
+        ).eq('user_id', user_data.user.id).execute()
+
+        if not result.data:
+            return jsonify({'error': 'Session not found'}), 404
+
+        return jsonify({'message': 'Session deleted successfully'}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def generate_structured_diet_plan(trimester, weight, health_conditions, dietary_preference):
+    """Generate a structured diet plan using Gemini AI"""
+    try:
+        # Improved prompt with clearer instructions
+        prompt = f"""
+        You are a professional nutritionist. Create a comprehensive pregnancy diet plan for:
+        - Trimester: {trimester}
+        - Weight: {weight}kg
+        - Health Conditions: {health_conditions or 'None'}
+        - Dietary Preference: {dietary_preference or 'No specific preference'}
+        
+        IMPORTANT: Respond ONLY with a valid JSON object. Do not include any markdown formatting or explanations.
+        
+        {{
+            "overview": {{
+                "calories_per_day": "2200-2500",
+                "key_nutrients": ["Folic Acid", "Iron", "Calcium", "Protein", "Omega-3"],
+                "foods_to_avoid": ["Raw fish", "Unpasteurized dairy", "High mercury fish"]
+            }},
+            "meal_plans": [
+                {{
+                    "type": "Balanced Plan",
+                    "meals": {{
+                        "breakfast": {{"name": "Nutritious Breakfast", "calories": "400", "items": ["Whole grain toast", "Scrambled eggs", "Fresh fruits"]}},
+                        "lunch": {{"name": "Healthy Lunch", "calories": "500", "items": ["Grilled chicken", "Brown rice", "Steamed vegetables"]}},
+                        "dinner": {{"name": "Light Dinner", "calories": "450", "items": ["Fish", "Quinoa", "Green salad"]}},
+                        "snacks": [{{"name": "Morning Snack", "items": ["Greek yogurt", "Nuts"]}}, {{"name": "Evening Snack", "items": ["Apple", "Peanut butter"]}}]
+                    }}
+                }}
+            ],
+            "tips": [
+                "Drink plenty of water throughout the day",
+                "Eat small, frequent meals to manage nausea",
+                "Take prenatal vitamins as recommended by your doctor",
+                "Avoid alcohol and limit caffeine intake"
+            ],
+            "supplements": [
+                {{"name": "Folic Acid", "dosage": "400-800 mcg daily", "reason": "Prevents neural tube defects"}},
+                {{"name": "Iron", "dosage": "27 mg daily", "reason": "Prevents anemia and supports blood volume expansion"}},
+                {{"name": "Calcium", "dosage": "1000 mg daily", "reason": "Supports baby's bone development"}}
+            ]
+        }}
+        """
+        
+        print(f"Generating diet plan for: {trimester} trimester, {weight}kg")
+        response = chatmodel.generate_content(prompt)
+        diet_plan_text = response.text.strip()
+        
+        print(f"Raw AI response: {diet_plan_text[:200]}...")
+        
+        # More robust JSON extraction
+        json_start = diet_plan_text.find('{')
+        json_end = diet_plan_text.rfind('}') + 1
+        
+        if json_start != -1 and json_end > json_start:
+            diet_plan_text = diet_plan_text[json_start:json_end]
+        
+        # Clean common markdown artifacts
+        diet_plan_text = diet_plan_text.replace('```json', '').replace('```', '').strip()
+        
+        print(f"Cleaned JSON: {diet_plan_text[:200]}...")
+        
+        try:
+            diet_plan = json.loads(diet_plan_text)
+            print("Successfully parsed diet plan JSON")
+            return diet_plan
+        except json.JSONDecodeError as e:
+            print(f"JSON decode error: {e}")
+            print(f"Failed to parse: {diet_plan_text}")
+            # Return a more comprehensive fallback
+            return create_fallback_diet_plan(trimester, weight, dietary_preference)
+            
+    except Exception as e:
+        print(f"Error generating diet plan: {e}")
+        return create_fallback_diet_plan(trimester, weight, dietary_preference)
+
+def create_fallback_diet_plan(trimester, weight, dietary_preference):
+    """Create a fallback diet plan when AI generation fails"""
+    return {
+        "overview": {
+            "calories_per_day": "2200-2500",
+            "key_nutrients": ["Folic Acid", "Iron", "Calcium", "Protein", "Omega-3", "Vitamin D"],
+            "foods_to_avoid": ["Raw fish", "Unpasteurized dairy", "High mercury fish", "Raw eggs", "Deli meats"]
+        },
+        "meal_plans": [
+            {
+                "type": "Balanced Plan",
+                "meals": {
+                    "breakfast": {
+                        "name": "Nutritious Morning Start",
+                        "calories": "400",
+                        "items": ["Whole grain cereal with milk", "Fresh berries", "Orange juice"]
+                    },
+                    "lunch": {
+                        "name": "Balanced Midday Meal",
+                        "calories": "500",
+                        "items": ["Grilled chicken salad", "Whole wheat bread", "Mixed vegetables"]
+                    },
+                    "dinner": {
+                        "name": "Light Evening Meal",
+                        "calories": "450",
+                        "items": ["Baked salmon", "Sweet potato", "Steamed broccoli"]
+                    },
+                    "snacks": [
+                        {"name": "Morning Snack", "items": ["Greek yogurt", "Almonds"]},
+                        {"name": "Afternoon Snack", "items": ["Apple slices", "Cheese"]}
+                    ]
+                }
+            }
+        ],
+        "tips": [
+            "Stay hydrated by drinking 8-10 glasses of water daily",
+            "Eat small, frequent meals to help with nausea",
+            "Include a variety of colorful fruits and vegetables",
+            "Choose whole grains over refined grains",
+            "Limit caffeine to 200mg per day"
+        ],
+        "supplements": [
+            {"name": "Prenatal Vitamin", "dosage": "1 tablet daily", "reason": "Comprehensive nutrition support"},
+            {"name": "Folic Acid", "dosage": "400-800 mcg", "reason": "Prevents neural tube defects"},
+            {"name": "Iron", "dosage": "27 mg daily", "reason": "Prevents anemia"}
+        ]
+    }
+# Update the existing diet_plan endpoint to use structured format as well
 @app.route("/diet_plan", methods=["POST"])
 def pregnancy_diet():
     try:
@@ -525,26 +789,21 @@ def pregnancy_diet():
         if not user_data:
             return jsonify({'error': 'Invalid token'}), 401
 
-        # --- Prompt for Gemini ---
-        prompt = (
-            f"You are a professional dietician and nutritionist. Suggest safe and personalized diet plans for pregnant women. "
-            f"Now, generate a diet plan for a woman in her **{data['trimester']} trimester**, weighing **{data['weight']} kg**, "
-            f"who is feeling **{data['health_conditions']}** and follows these dietary preferences: **{data['dietary_preference']}**. "
-            f"Give two separate diet plans: one **vegetarian** and one **non-vegetarian**. Do not include anything that violates her preferences. "
-            f"Present the results clearly in markdown format with headings and bullet points."
+        # Generate structured diet plan
+        diet_plan = generate_structured_diet_plan(
+            data['trimester'],
+            data['weight'],
+            data['health_conditions'],
+            data['dietary_preference']
         )
 
-        # --- Gemini API Call ---
-        response = chatmodel.generate_content({"role": "user", "parts": [{"text": prompt}]})
-        diet_plan_text = response.text
-
-        # --- Optionally save to DB (you can add more fields if needed) ---
+        # --- Optionally save to DB ---
         supabase.table('diet_plans').insert({
             'UID': user_data.user.id,
-            'diet_plan': diet_plan_text
+            'diet_plan': str(diet_plan)  # Convert to string for storage
         }).execute()
 
-        return jsonify({"diet_plan": diet_plan_text})
+        return jsonify({"diet_plan": diet_plan})
 
     except Exception as e:
         print(e)

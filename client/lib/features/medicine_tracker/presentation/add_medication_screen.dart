@@ -26,13 +26,15 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
   DateTime? _endDate;
 
   late AnimationController _fadeController;
+  late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
-  final List<String> _categories = [
-    'Prenatal Vitamins',
-    'Prescription',
-    'Supplements',
-    'Pain Relief',
+  final List<Map<String, dynamic>> _categories = [
+    {'name': 'Prenatal Vitamins', 'icon': LucideIcons.heart, 'color': Colors.pink},
+    {'name': 'Prescription', 'icon': LucideIcons.fileText, 'color': Colors.blue},
+    {'name': 'Supplements', 'icon': LucideIcons.plus, 'color': Colors.green},
+    {'name': 'Pain Relief', 'icon': LucideIcons.shield, 'color': Colors.orange},
   ];
 
   final Map<String, List<TimeOfDay>> _frequencyTimes = {
@@ -58,13 +60,28 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
   void initState() {
     super.initState();
     _fadeController = AnimationController(
-      duration: Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 800),
       vsync: this,
     );
+    _slideController = AnimationController(
+      duration: Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
     );
+    
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutBack,
+    ));
+    
     _fadeController.forward();
+    _slideController.forward();
   }
 
   @override
@@ -73,6 +90,7 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
     _dosageController.dispose();
     _notesController.dispose();
     _fadeController.dispose();
+    _slideController.dispose();
     super.dispose();
   }
 
@@ -92,6 +110,13 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
               primary: AppPallete.gradient1,
+              surface: Colors.white,
+            ),
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Colors.white,
+              hourMinuteTextColor: AppPallete.gradient1,
+              dialHandColor: AppPallete.gradient1,
+              dialBackgroundColor: AppPallete.gradient1.withOpacity(0.1),
             ),
           ),
           child: child!,
@@ -117,6 +142,7 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
               primary: AppPallete.gradient1,
+              surface: Colors.white,
             ),
           ),
           child: child!,
@@ -159,14 +185,27 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
         SnackBar(
           content: Row(
             children: [
-              Icon(LucideIcons.check, color: Colors.white),
+              Container(
+                padding: EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(LucideIcons.checkCircle, color: Colors.white, size: 20),
+              ),
               SizedBox(width: 12),
-              Text('Medication added successfully!'),
+              Expanded(
+                child: Text(
+                  'Medication added successfully!',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ),
             ],
           ),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          margin: EdgeInsets.all(16),
         ),
       );
 
@@ -176,14 +215,27 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
         SnackBar(
           content: Row(
             children: [
-              Icon(LucideIcons.alertCircle, color: Colors.white),
+              Container(
+                padding: EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(LucideIcons.alertCircle, color: Colors.white, size: 20),
+              ),
               SizedBox(width: 12),
-              Text('Failed to add medication'),
+              Expanded(
+                child: Text(
+                  'Failed to add medication',
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ),
             ],
           ),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          margin: EdgeInsets.all(16),
         ),
       );
     }
@@ -213,6 +265,13 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(25)),
+            boxShadow: [
+              BoxShadow(
+                color: AppPallete.gradient1.withOpacity(0.3),
+                blurRadius: 20,
+                offset: Offset(0, 8),
+              ),
+            ],
           ),
         ),
         leading: IconButton(
@@ -222,28 +281,106 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       ),
       body: FadeTransition(
         opacity: _fadeAnimation,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildBasicInfoSection(),
-                SizedBox(height: 24),
-                _buildFrequencySection(),
-                SizedBox(height: 24),
-                _buildTimesSection(),
-                SizedBox(height: 24),
-                _buildDatesSection(),
-                SizedBox(height: 24),
-                _buildNotesSection(),
-                SizedBox(height: 32),
-                _buildSaveButton(),
-              ],
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(20),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeaderSection(),
+                  SizedBox(height: 24),
+                  _buildBasicInfoSection(),
+                  SizedBox(height: 24),
+                  _buildCategorySection(),
+                  SizedBox(height: 24),
+                  _buildFrequencySection(),
+                  SizedBox(height: 24),
+                  _buildTimesSection(),
+                  SizedBox(height: 24),
+                  _buildDatesSection(),
+                  SizedBox(height: 24),
+                  _buildNotesSection(),
+                  SizedBox(height: 32),
+                  _buildSaveButton(),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderSection() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppPallete.gradient1.withOpacity(0.1),
+            AppPallete.gradient2.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppPallete.gradient1.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppPallete.gradient1, AppPallete.gradient2],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppPallete.gradient1.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Icon(
+              LucideIcons.plus,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'New Medication',
+                  style: TextStyle(
+                    color: AppPallete.textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Add medication details and set reminders',
+                  style: TextStyle(
+                    color: AppPallete.textColor.withOpacity(0.7),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -253,40 +390,48 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: Offset(0, 4),
+            blurRadius: 20,
+            offset: Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Basic Information',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppPallete.textColor,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppPallete.gradient1.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  LucideIcons.info,
+                  color: AppPallete.gradient1,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Basic Information',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppPallete.textColor,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 20),
-          TextFormField(
+          _buildTextField(
             controller: _nameController,
-            decoration: InputDecoration(
-              labelText: 'Medication Name',
-              prefixIcon: Icon(LucideIcons.pill, color: Colors.blue[600]),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.blue[600]!),
-              ),
-            ),
+            label: 'Medication Name',
+            icon: LucideIcons.pill,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter medication name';
@@ -295,19 +440,10 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
             },
           ),
           SizedBox(height: 16),
-          TextFormField(
+          _buildTextField(
             controller: _dosageController,
-            decoration: InputDecoration(
-              labelText: 'Dosage (e.g., 500mg, 1 tablet)',
-              prefixIcon: Icon(LucideIcons.activity, color: Colors.blue[600]),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.blue[600]!),
-              ),
-            ),
+            label: 'Dosage (e.g., 500mg, 1 tablet)',
+            icon: LucideIcons.activity,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter dosage';
@@ -315,30 +451,152 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
               return null;
             },
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    String? Function(String?)? validator,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Container(
+          margin: EdgeInsets.all(12),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppPallete.gradient1.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: AppPallete.gradient1, size: 20),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: AppPallete.gradient1, width: 2),
+        ),
+        labelStyle: TextStyle(color: AppPallete.textColor.withOpacity(0.7)),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildCategorySection() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppPallete.gradient2.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  LucideIcons.tag,
+                  color: AppPallete.gradient2,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Category',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppPallete.textColor,
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: _selectedCategory,
-            decoration: InputDecoration(
-              labelText: 'Category',
-              prefixIcon: Icon(LucideIcons.tag, color: Colors.blue[600]),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.blue[600]!),
-              ),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 3,
             ),
-            items: _categories.map((category) {
-              return DropdownMenuItem(
-                value: category,
-                child: Text(category),
+            itemCount: _categories.length,
+            itemBuilder: (context, index) {
+              final category = _categories[index];
+              final isSelected = _selectedCategory == category['name'];
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedCategory = category['name'];
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: isSelected
+                        ? LinearGradient(
+                            colors: [AppPallete.gradient1, AppPallete.gradient2],
+                          )
+                        : null,
+                    color: isSelected ? null : category['color'].withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : category['color'].withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        category['icon'],
+                        color: isSelected ? Colors.white : category['color'],
+                        size: 18,
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          category['name'],
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : category['color'],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedCategory = value!;
-              });
             },
           ),
         ],
@@ -351,25 +609,42 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: Offset(0, 4),
+            blurRadius: 20,
+            offset: Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Frequency',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppPallete.textColor,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.purple.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  LucideIcons.repeat,
+                  color: Colors.purple,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Frequency',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppPallete.textColor,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 16),
           Wrap(
@@ -380,19 +655,35 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
               return GestureDetector(
                 onTap: () => _updateTimesForFrequency(frequency),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.blue[600] : Colors.grey[100],
+                    gradient: isSelected
+                        ? LinearGradient(
+                            colors: [AppPallete.gradient1, AppPallete.gradient2],
+                          )
+                        : null,
+                    color: isSelected ? null : Colors.grey[100],
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(
-                      color: isSelected ? Colors.blue[600]! : Colors.grey[300]!,
+                      color: isSelected
+                          ? Colors.transparent
+                          : Colors.grey[300]!,
                     ),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: AppPallete.gradient1.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: Offset(0, 2),
+                            ),
+                          ]
+                        : null,
                   ),
                   child: Text(
                     frequency,
                     style: TextStyle(
                       color: isSelected ? Colors.white : AppPallete.textColor,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -409,25 +700,42 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: Offset(0, 4),
+            blurRadius: 20,
+            offset: Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Times',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppPallete.textColor,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  LucideIcons.clock,
+                  color: Colors.orange,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Times',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppPallete.textColor,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 16),
           ...(_selectedTimes.asMap().entries.map((entry) {
@@ -435,38 +743,71 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
             final time = entry.value;
             return Container(
               margin: EdgeInsets.only(bottom: 12),
-              child: InkWell(
-                onTap: () => _selectTime(index),
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(LucideIcons.clock, color: Colors.blue[600], size: 20),
-                      SizedBox(width: 12),
-                      Text(
-                        'Dose ${index + 1}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: AppPallete.textColor,
-                        ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => _selectTime(index),
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.orange.withOpacity(0.05),
+                          Colors.orange.withOpacity(0.1),
+                        ],
                       ),
-                      Spacer(),
-                      Text(
-                        time.format(context),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[600],
-                        ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.orange.withOpacity(0.3),
                       ),
-                      SizedBox(width: 8),
-                      Icon(LucideIcons.chevronRight, color: Colors.grey[400], size: 16),
-                    ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            LucideIcons.clock,
+                            color: Colors.orange,
+                            size: 16,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          'Dose ${index + 1}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppPallete.textColor,
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            time.format(context),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          LucideIcons.chevronRight,
+                          color: Colors.orange,
+                          size: 16,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -482,97 +823,130 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: Offset(0, 4),
+            blurRadius: 20,
+            offset: Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Duration',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppPallete.textColor,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  LucideIcons.calendar,
+                  color: Colors.blue,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Duration',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppPallete.textColor,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 16),
-          InkWell(
+          _buildDateSelector(
+            label: 'Start Date',
+            date: _startDate,
             onTap: () => _selectDate(true),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(LucideIcons.calendar, color: Colors.blue[600], size: 20),
-                  SizedBox(width: 12),
-                  Text(
-                    'Start Date',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: AppPallete.textColor,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    '${_startDate.day}/${_startDate.month}/${_startDate.year}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            isRequired: true,
           ),
           SizedBox(height: 12),
-          InkWell(
+          _buildDateSelector(
+            label: 'End Date (Optional)',
+            date: _endDate,
             onTap: () => _selectDate(false),
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(LucideIcons.calendar, color: Colors.grey[600], size: 20),
-                  SizedBox(width: 12),
-                  Text(
-                    'End Date (Optional)',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: AppPallete.textColor,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    _endDate != null 
-                        ? '${_endDate!.day}/${_endDate!.month}/${_endDate!.year}'
-                        : 'Select date',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _endDate != null ? Colors.blue[600] : Colors.grey[500],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            isRequired: false,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDateSelector({
+    required String label,
+    required DateTime? date,
+    required VoidCallback onTap,
+    required bool isRequired,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.blue.withOpacity(0.05),
+                Colors.blue.withOpacity(0.1),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.blue.withOpacity(0.3),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  LucideIcons.calendar,
+                  color: Colors.blue,
+                  size: 16,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppPallete.textColor,
+                ),
+              ),
+              Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: date != null ? Colors.blue : Colors.grey[400],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  date != null
+                      ? '${date.day}/${date.month}/${date.year}'
+                      : 'Select date',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -582,39 +956,63 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
-            blurRadius: 15,
-            offset: Offset(0, 4),
+            blurRadius: 20,
+            offset: Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Notes',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppPallete.textColor,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  LucideIcons.fileText,
+                  color: Colors.green,
+                  size: 20,
+                ),
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Notes',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppPallete.textColor,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 16),
           TextFormField(
             controller: _notesController,
-            maxLines: 3,
+            maxLines: 4,
             decoration: InputDecoration(
               hintText: 'Add any additional notes or instructions...',
+              hintStyle: TextStyle(color: AppPallete.textColor.withOpacity(0.5)),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide(color: Colors.grey[300]!),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.blue[600]!),
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide(color: AppPallete.gradient1, width: 2),
               ),
+              contentPadding: EdgeInsets.all(16),
             ),
           ),
         ],
@@ -625,21 +1023,41 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
   Widget _buildSaveButton() {
     return Container(
       width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
+      height: 60,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppPallete.gradient1, AppPallete.gradient2],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppPallete.gradient1.withOpacity(0.4),
+            blurRadius: 20,
+            offset: Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ElevatedButton.icon(
         onPressed: _saveMedication,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppPallete.gradient1,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
           ),
-          elevation: 0,
         ),
-        child: Text(
+        icon: Icon(
+          LucideIcons.check,
+          color: Colors.white,
+          size: 24,
+        ),
+        label: Text(
           'Add Medication',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),

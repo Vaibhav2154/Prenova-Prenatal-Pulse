@@ -15,6 +15,7 @@ import 'package:prenova/features/contraction/presentation/contraction_timer.dart
 import 'package:prenova/features/medicine_tracker/models/medication_model.dart';
 import 'package:prenova/features/medicine_tracker/presentation/medicine_tracker_screen.dart';
 import 'package:prenova/features/medicine_tracker/services/medication_storage_service.dart';
+import 'package:prenova/features/pregnancy_diet_screen/enhanced.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
 import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
 import 'package:prenova/features/chatbot/presentation/chatbot.dart';
@@ -185,7 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     final List<Widget> bottomNavScreens = [
       PregnancyChatScreen(),
-      PregnancyDietScreen(),
+      EnhancedPregnancyDietScreen(),
       DashboardScreen(),
       PregnancyStagesScreen(),
       ServicesHub(),
