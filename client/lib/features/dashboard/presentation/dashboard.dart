@@ -3,6 +3,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:prenova/core/theme/app_pallete.dart';
 import 'package:prenova/core/utils/loader.dart';
 import 'package:prenova/core/utils/pregnancy_utils.dart';
+import 'package:prenova/core/widgets/services_modal.dart';
 import 'package:prenova/features/BabyStatus/models/pregnancy_stage_model.dart';
 import 'package:prenova/features/BabyStatus/presentation/pregnancy_week_screen.dart';
 import 'package:prenova/features/BabyStatus/presentation/pregnancy_stages_screen.dart';
@@ -143,6 +144,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     setState(() {
       _fetchUserName();
     });
+    
     final List<Map<String, dynamic>> dashboardItems = [
       {
         'title': 'Fetal Health\nMonitoring',
@@ -189,7 +191,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       EnhancedPregnancyDietScreen(),
       DashboardScreen(),
       PregnancyStagesScreen(),
-      ServicesHub(),
+      // Remove ServicesHub() since we're using modal instead
+      DashboardScreen(), // Placeholder to maintain index consistency
     ];
 
     return Scaffold(
@@ -261,7 +264,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                // SizedBox(height: 20),
                 // Welcome Section
                 // FadeTransition(
                 //   opacity: _animationController,
@@ -366,6 +369,14 @@ class _DashboardScreenState extends State<DashboardScreen>
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {
+              // Special handling for Smart Med tab (index 4)
+              if (index == 4) {
+                // Show services modal instead of navigating
+                ServicesModal.show(context);
+                return;
+              }
+              
+              // For other tabs, navigate normally
               Navigator.push(
                 context,
                 PageRouteBuilder(
@@ -383,10 +394,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             elevation: 0,
             selectedItemColor: AppPallete.gradient1,
             unselectedItemColor: AppPallete.borderColor,
-            selectedLabelStyle:
-                TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
-            unselectedLabelStyle:
-                TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
+            selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(
@@ -419,7 +428,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 icon: Container(
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _currentIndex == 1
+                    color: _currentIndex == 2
                         ? AppPallete.gradient1.withOpacity(0.1)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
@@ -432,7 +441,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 icon: Container(
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _currentIndex == 1
+                    color: _currentIndex == 3
                         ? AppPallete.gradient1.withOpacity(0.1)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
@@ -445,7 +454,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 icon: Container(
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _currentIndex == 3
+                    color: _currentIndex == 4
                         ? AppPallete.gradient1.withOpacity(0.1)
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(12),
@@ -625,6 +634,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             onTap: item['onPressed'],
             child: Container(
               decoration: BoxDecoration(
+                // 
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [

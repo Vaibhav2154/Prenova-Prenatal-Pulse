@@ -31,8 +31,16 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
   late Animation<Offset> _slideAnimation;
 
   final List<Map<String, dynamic>> _categories = [
-    {'name': 'Prenatal Vitamins', 'icon': LucideIcons.heart, 'color': Colors.pink},
-    {'name': 'Prescription', 'icon': LucideIcons.fileText, 'color': Colors.blue},
+    {
+      'name': 'Prenatal Vitamins',
+      'icon': LucideIcons.heart,
+      'color': Colors.pink
+    },
+    {
+      'name': 'Prescription',
+      'icon': LucideIcons.fileText,
+      'color': Colors.blue
+    },
     {'name': 'Supplements', 'icon': LucideIcons.plus, 'color': Colors.green},
     {'name': 'Pain Relief', 'icon': LucideIcons.shield, 'color': Colors.orange},
   ];
@@ -67,11 +75,11 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       duration: Duration(milliseconds: 1000),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeOut),
     );
-    
+
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, 0.3),
       end: Offset.zero,
@@ -79,7 +87,7 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       parent: _slideController,
       curve: Curves.easeOutBack,
     ));
-    
+
     _fadeController.forward();
     _slideController.forward();
   }
@@ -169,9 +177,10 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
       name: _nameController.text.trim(),
       dosage: _dosageController.text.trim(),
       frequency: _selectedFrequency,
-      times: _selectedTimes.map((time) => 
-        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}'
-      ).toList(),
+      times: _selectedTimes
+          .map((time) =>
+              '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}')
+          .toList(),
       startDate: _startDate,
       endDate: _endDate,
       notes: _notesController.text.trim(),
@@ -180,7 +189,7 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
 
     try {
       await _storageService.addMedication(medication);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -191,7 +200,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(LucideIcons.checkCircle, color: Colors.white, size: 20),
+                child: Icon(LucideIcons.checkCircle,
+                    color: Colors.white, size: 20),
               ),
               SizedBox(width: 12),
               Expanded(
@@ -204,7 +214,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
           ),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           margin: EdgeInsets.all(16),
         ),
       );
@@ -221,7 +232,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(LucideIcons.alertCircle, color: Colors.white, size: 20),
+                child: Icon(LucideIcons.alertCircle,
+                    color: Colors.white, size: 20),
               ),
               SizedBox(width: 12),
               Expanded(
@@ -234,7 +246,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
           ),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           margin: EdgeInsets.all(16),
         ),
       );
@@ -464,10 +477,20 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
     int maxLines = 1,
   }) {
     return TextFormField(
+      style: TextStyle(
+        color: Colors.black87, // Add this line
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
       controller: controller,
       maxLines: maxLines,
       decoration: InputDecoration(
+        hintStyle: TextStyle(color: Colors.grey[800]), // Darker hint text
         labelText: label,
+        labelStyle: TextStyle(
+          color: Colors.black87,
+          fontWeight: FontWeight.w500, // More weight for better visibility
+        ),
         prefixIcon: Container(
           margin: EdgeInsets.all(12),
           padding: EdgeInsets.all(8),
@@ -489,7 +512,11 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(color: AppPallete.gradient1, width: 2),
         ),
-        labelStyle: TextStyle(color: AppPallete.textColor.withOpacity(0.7)),
+        floatingLabelStyle: TextStyle(
+          // Style for floating label
+          color: AppPallete.gradient1,
+          fontWeight: FontWeight.bold,
+        ),
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       validator: validator,
@@ -563,10 +590,14 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? LinearGradient(
-                            colors: [AppPallete.gradient1, AppPallete.gradient2],
+                            colors: [
+                              AppPallete.gradient1,
+                              AppPallete.gradient2
+                            ],
                           )
                         : null,
-                    color: isSelected ? null : category['color'].withOpacity(0.1),
+                    color:
+                        isSelected ? null : category['color'].withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isSelected
@@ -586,7 +617,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
                         child: Text(
                           category['name'],
                           style: TextStyle(
-                            color: isSelected ? Colors.white : category['color'],
+                            color:
+                                isSelected ? Colors.white : category['color'],
                             fontWeight: FontWeight.w600,
                             fontSize: 12,
                           ),
@@ -659,15 +691,17 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? LinearGradient(
-                            colors: [AppPallete.gradient1, AppPallete.gradient2],
+                            colors: [
+                              AppPallete.gradient1,
+                              AppPallete.gradient2
+                            ],
                           )
                         : null,
                     color: isSelected ? null : Colors.grey[100],
                     borderRadius: BorderRadius.circular(25),
                     border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : Colors.grey[300]!,
+                      color:
+                          isSelected ? Colors.transparent : Colors.grey[300]!,
                     ),
                     boxShadow: isSelected
                         ? [
@@ -786,7 +820,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
                         ),
                         Spacer(),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.orange,
                             borderRadius: BorderRadius.circular(12),
@@ -999,7 +1034,8 @@ class _AddMedicationScreenState extends State<AddMedicationScreen>
             maxLines: 4,
             decoration: InputDecoration(
               hintText: 'Add any additional notes or instructions...',
-              hintStyle: TextStyle(color: AppPallete.textColor.withOpacity(0.5)),
+              hintStyle:
+                  TextStyle(color: AppPallete.textColor.withOpacity(0.5)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: Colors.grey[300]!),

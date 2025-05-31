@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prenova/features/auth/presentation/loginpage.dart';
 import 'package:prenova/features/auth/presentation/welcome_pg.dart';
 import 'package:prenova/features/dashboard/presentation/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

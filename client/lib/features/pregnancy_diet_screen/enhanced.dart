@@ -284,18 +284,18 @@ class _EnhancedPregnancyDietScreenState extends State<EnhancedPregnancyDietScree
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[850],
+          backgroundColor:AppPallete.gradient1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text('Delete Diet Plan', style: TextStyle(color: Colors.white)),
           content: Text('Are you sure you want to delete this diet plan?', 
                       style: TextStyle(color: Colors.white70)),
           actions: [
             TextButton(
-              child: Text('Cancel', style: TextStyle(color: Colors.grey)),
+              child: Text('Cancel', style: TextStyle(color: Colors.white)),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             TextButton(
-              child: Text('Delete', style: TextStyle(color: Colors.red)),
+              child: Text('Delete', style: TextStyle(color: Colors.white)),
               onPressed: () => Navigator.of(context).pop(true),
             ),
           ],

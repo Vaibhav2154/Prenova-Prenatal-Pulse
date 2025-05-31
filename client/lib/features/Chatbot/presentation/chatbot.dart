@@ -41,6 +41,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
   late FlutterTts _flutterTts;
   bool _isListening = false;
   bool _speechEnabled = false;
+  bool _isSpeaking = false; // Add this line
 
   @override
   void initState() {
@@ -300,7 +301,25 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
   }
 
   void _speak(String text) async {
+    setState(() {
+      _isSpeaking = true;
+    });
+    
     await _flutterTts.speak(text);
+    
+    // Listen for completion
+    _flutterTts.setCompletionHandler(() {
+      setState(() {
+        _isSpeaking = false;
+      });
+    });
+  }
+
+  void _stopSpeaking() async {
+    await _flutterTts.stop();
+    setState(() {
+      _isSpeaking = false;
+    });
   }
 
   void _scrollToBottom() {
@@ -350,7 +369,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
               ),
               SizedBox(height: 24),
               Text(
-                "Initializing Prenova...",
+                "Initializing NOVA...",
                 style: TextStyle(
                   color: AppPallete.textColor,
                   fontSize: 16,
@@ -404,7 +423,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
               ),
             ),
             Text(
-              "Nurturing Online Virtual A",
+              "Nurturing Online Virtual Assistant",
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
                 fontSize: 12,
@@ -444,6 +463,11 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
             ),
             child: Icon(LucideIcons.moreVertical, color: Colors.white, size: 20),
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 8,
+          color: Colors.white,
           onSelected: (value) {
             switch (value) {
               case 'new_chat':
@@ -455,37 +479,180 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
               case 'clear_current':
                 _clearCurrentChat();
                 break;
+              case 'stop_speaking':
+                _stopSpeaking();
+                break;
             }
           },
           itemBuilder: (context) => [
             PopupMenuItem(
               value: 'new_chat',
-              child: Row(
-                children: [
-                  Icon(LucideIcons.plus, size: 18),
-                  SizedBox(width: 12),
-                  Text('New Chat'),
-                ],
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppPallete.gradient1.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        LucideIcons.plus,
+                        size: 18,
+                        color: AppPallete.gradient1,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'New Chat',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppPallete.textColor,
+                          ),
+                        ),
+                        Text(
+                          'Start fresh conversation',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppPallete.textColor.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             PopupMenuItem(
               value: 'chat_history',
-              child: Row(
-                children: [
-                  Icon(LucideIcons.history, size: 18),
-                  SizedBox(width: 12),
-                  Text('Chat History'),
-                ],
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppPallete.gradient2.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        LucideIcons.history,
+                        size: 18,
+                        color: AppPallete.gradient2,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Chat History',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppPallete.textColor,
+                          ),
+                        ),
+                        Text(
+                          'View previous conversations',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppPallete.textColor.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
+            if (_isSpeaking)
+              PopupMenuItem(
+                value: 'stop_speaking',
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          LucideIcons.volumeX,
+                          size: 18,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Stop Speaking',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppPallete.textColor,
+                            ),
+                          ),
+                          Text(
+                            'Pause voice response',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppPallete.textColor.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            PopupMenuDivider(),
             PopupMenuItem(
               value: 'clear_current',
-              child: Row(
-                children: [
-                  Icon(LucideIcons.trash2, size: 18, color: Colors.red),
-                  SizedBox(width: 12),
-                  Text('Clear Chat', style: TextStyle(color: Colors.red)),
-                ],
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        LucideIcons.trash2,
+                        size: 18,
+                        color: Colors.red,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Clear Chat',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red,
+                          ),
+                        ),
+                        Text(
+                          'Delete current conversation',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red.withOpacity(0.6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -728,7 +895,7 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
                   ),
                   SizedBox(width: 8),
                   Text(
-                    "Prenova",
+                    "Nova",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppPallete.gradient1,
@@ -736,20 +903,77 @@ class _PregnancyChatScreenState extends State<PregnancyChatScreen>
                     ),
                   ),
                   Spacer(),
-                  GestureDetector(
-                    onTap: () => _speak(message["content"]),
-                    child: Container(
-                      padding: EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: AppPallete.gradient1.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
+                  Row(
+                    children: [
+                      if (_isSpeaking)
+                        GestureDetector(
+                          onTap: _stopSpeaking,
+                          child: Container(
+                            padding: EdgeInsets.all(6),
+                            margin: EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Colors.orange.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  LucideIcons.volumeX,
+                                  size: 14,
+                                  color: Colors.orange,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Stop',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      GestureDetector(
+                        onTap: () => _speak(message["content"]),
+                        child: Container(
+                          padding: EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: _isSpeaking 
+                                ? AppPallete.gradient1.withOpacity(0.2)
+                                : AppPallete.gradient1.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: _isSpeaking 
+                                  ? AppPallete.gradient1.withOpacity(0.5)
+                                  : AppPallete.gradient1.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _isSpeaking ? LucideIcons.volume2 : LucideIcons.play,
+                                size: 14,
+                                color: AppPallete.gradient1,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                _isSpeaking ? 'Speaking...' : 'Listen',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppPallete.gradient1,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      child: Icon(
-                        LucideIcons.volume2,
-                        size: 16,
-                        color: AppPallete.gradient1,
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),
