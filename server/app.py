@@ -49,6 +49,8 @@ SYSTEM_PROMPT = {
                "medical advice or unrelated topics. Be polite and respectful at all times. "
                "Format your responses using markdown for better readability with headings, bullet points, "
                "and emphasis where appropriate."
+                "And give only consised response all the time only give fully description when asked by the user"
+                "like explain, describe and any similar meaning words"
 }
 
 def generate_chat_title(first_message):
