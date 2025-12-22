@@ -8,7 +8,8 @@ class ApiContants {
     // static const baseUrl = 'http://172.26.46.198:5000'; // for phone2222/
     // static const baseUrl = 'http://172.26.46.198:8000'; // for phone2222 fastapi
 
-  static String get baseUrl => dotenv.env['BACKEND_URL'] ?? '';
+  static String get baseUrl => dotenv.env['BACKEND_URL'] ?? 'http://10.116.58.135:5000';
+
   
   static Future<void> init() async {
     await dotenv.load(fileName: ".env");

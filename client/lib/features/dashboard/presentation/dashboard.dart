@@ -8,7 +8,7 @@ import 'package:prenova/features/BabyStatus/models/pregnancy_stage_model.dart';
 import 'package:prenova/features/BabyStatus/presentation/pregnancy_week_screen.dart';
 import 'package:prenova/features/BabyStatus/presentation/pregnancy_stages_screen.dart';
 import 'package:prenova/features/BabyStatus/services/pregnancy_stage_service.dart';
-import 'package:prenova/features/MedicalDocuments/medical_documents.dart';
+import 'package:prenova/features/Chatbot/presentation/chatbot.dart';
 import 'package:prenova/features/auth/auth_service.dart';
 import 'package:prenova/features/auth/presentation/Profilepage.dart';
 import 'package:prenova/features/ctg/presentation/ctg_analysis.dart';
@@ -19,10 +19,7 @@ import 'package:prenova/features/medicine_tracker/services/medication_storage_se
 import 'package:prenova/features/pregnancy_diet_screen/enhanced.dart';
 import 'package:prenova/features/pregnancy_risk/presentation/pregnancy_risk.dart';
 import 'package:prenova/features/kick_tracker/presentation/kick_tracker.dart';
-import 'package:prenova/features/chatbot/presentation/chatbot.dart';
-import 'package:prenova/features/pregnancy_diet_screen/pregnancy_diet_screen.dart';
-import 'package:prenova/features/doctor_cons/presentation/doctor_consultation.dart';
-import 'package:prenova/features/services/presentation/services_hub.dart';
+// import 'package:prenova/features/chatbot/presentation/chatbot.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardScreen extends StatefulWidget {
